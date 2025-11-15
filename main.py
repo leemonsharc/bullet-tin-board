@@ -8,7 +8,6 @@
 from flask import Flask, request, render_template, jsonify
 
 connected = 0
-loggedin = 0
 
 #STUFF FOR THE FILE EXPLORER
 FILE_SYSTEM = {
@@ -96,11 +95,6 @@ cls-- clears the terminal history\n
     return output
 
 def bbsProcessor(command):
-    output = ""
-    global workingDir
-    helpSuggestion = "Invalid command. Type 'help' or'/?' for help."
-    cmdSplits = command.split()
-    if connected = 0
     return command
 
 
