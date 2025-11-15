@@ -73,3 +73,4 @@ function stopDrag() {
 
 document.querySelectorAll('.window').forEach(window => {
     window.addEventListener('mousedown', () => bringToFront(window));
+    });
