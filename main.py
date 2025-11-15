@@ -7,9 +7,9 @@ def index():
     print(history)
     return render_template('index.html', history = history)
 @app.route('/submit', methods=['POST'])
-def my_form_post():
+def cmdhistory():
     global history
-    joinedword = "".join(request.form['inp'])
+    joinedword = ">" + "".join(request.form['inp'])
     history.append(joinedword)
     return """
     <!DOCTYPE html>
