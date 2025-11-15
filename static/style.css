@@ -28,13 +28,13 @@ body {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 .header h1{
-  color: #08141e;
+  color: #f6d6bd;
   font-size: 40px;
   margin-bottom: 10px;
   text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
 }
 .header p{
-  color: #08141e;
+  color: #f6d6bd;
   font-size: 18px;
 }
 .button-container {
@@ -136,6 +136,7 @@ body {
   max-height: 400px;
   overflow-y: auto;
   line-height: 1.6;
+  color: #f6d6bd;
 }
 
 .window-content h2 {
