@@ -49,6 +49,22 @@
                 {% include 'explorer.html' %}
             </div>
         </div>
+
+        <div id="ticTacToe" class="window">
+    <div class="window-header" onmousedown="startDrag(event, 'ticTacToe')">
+        <span>TICTACTOE.EXE - Running...</span>
+        <button onclick="closeWindow('ticTacToe')" class="close-btn">×</button>
+    </div>
+    
+    <div class="window-content">
+        <div class="game-container">
+            <div class="status" id="status">Your Turn</div>
+            <div class="board" id="board"></div>
+            <button class="reset-btn" id="resetBtn">NEW GAME</button>
+        </div>
+    </div>
+    </div>
+
         <script src="{{ url_for('static', filename='windows.js') }}"></script>
 
     </body>

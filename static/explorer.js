@@ -57,6 +57,11 @@ function executeFile(path) {
         document.getElementById('ticTacToe').classList.add('active');
     }
 }
+function executeFile(path) {
+    if (path.includes('TICTACTOE.EXE')) {
+        OpenWindow('ticTacToe');
+    }
+}
 function renderTree() {
     const tree = document.getElementById('file-tree');
     tree.innerHTML = renderItem(fileSystem);

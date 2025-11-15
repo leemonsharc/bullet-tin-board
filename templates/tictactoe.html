@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TICTACTOE.EXE</title>
+
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                background: #000;
+                color: #0f0;
+                font-family: 'Courier New', Courier, monospace;
+            }
+
+            #ticTacToe {
+                position: fixed;
+                display: none;
+                border: 2px solid #0f0;
+                background: #000;
+                width: 400px;
+                height: 450px;
+                z-index: 1000;
+            }
+
+            #ticTacToe.active {
+                display: block;
+            }
+
+            .window-header {
+                background: #0f0;
+                color: #000;
+                padding: 5px 10px;
+                cursor: move;
+                display: flex;
+                justify-content: space-between;
+                font-weight: bold;
+            }
+
+            .close-btn {
+                background: none;
+                border: none;
+                color: #000;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 0 5px;
+            }
+
+            .game-container {
+                padding: 20px;
+                text-align: center;
+            }
+
+            .status {
+                margin-bottom: 20px;
+                font-size: 18px;
+                height: 30px;
+            }
+
+            .board {
+                display: grid;
+                grid-template-columns: repeat(3, 100px);
+                grid-gap: 5px;
+                margin: 0 auto;
+                width: fit-conntent;
+            }
+
+            .cell {
+                width: 100px;
+                height: 100px;
+                border: 2px solid #0f0;
+                font-size: 48px;
+                display: flex;
+                transition: background 0.3s;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .cell:hover:not(.taken) {
+            background: #003300;
+            }
+
+            .cell.taken {
+                cursor: not-allowed;
+            }
+
+            .reset-btn {
+                margin-top: 20px;
+                padding: 10px 20px;
+                font-size: 16px;
+                background: #0f0;
+                color: #000;
+                border: none;
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+            .reset-btn:hover {
+                background: #0ff;
+            }
+        </style>
+    </head>
+
+    <body>
+         <div id="ticTacToe" class="window">
+        <div class="window-header">
+            <span>TICTACTOE.EXE - Running...</span>
+            <button class="close-btn">×</button>
+        </div>
+        
+        <div class="game-container">
+            <div class="status" id="status">Your Turn</div>
+            <div class="board" id="board"></div>
+            <button class="reset-btn" id="resetBtn">NEW GAME</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPlayer = 'X';
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+        let humanPlayer = 'X';
+        let botPlayer = 'O';
+        let lastWinner = null;
+
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+            [0, 4, 8], [2, 4, 6]              // diagonals
+        ];
+
+        function initGame() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+            
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleCellClick);
+                boardEl.appendChild(cell);
+            }
+
+            document.getElementById('resetBtn').addEventListener('click', resetGame);
+            document.querySelector('.close-btn').addEventListener('click', closeGame);
+        }
+
+        function handleCellClick(e) {
+            const index = e.target.dataset.index;
+            
+            if (board[index] !== '' || !gameActive || currentPlayer !== humanPlayer) return;
+            
+            makeMove(index, humanPlayer);
+            
+            if (gameActive) {
+                setTimeout(botMove, 500);
+            }
+        }
+
+        function makeMove(index, player) {
+            board[index] = player;
+            const cells = document.querySelectorAll('.cell');
+            cells[index].textContent = player;
+            cells[index].classList.add('taken');
+            
+            if (checkWin()) {
+                const winner = player === humanPlayer ? 'You Win!' : 'Bot Wins!';
+                document.getElementById('status').textContent = winner;
+                gameActive = false;
+                firstPlayer = player;
+                return;
+            }
+            
+            if (board.every(cell => cell !== '')) {
+                document.getElementById('status').textContent = 'Draw!';
+                gameActive = false;
+                return;
+            }
+            
+            currentPlayer = player === humanPlayer ? botPlayer : humanPlayer;
+            const turn = currentPlayer === humanPlayer ? 'Your Turn' : 'Bot Thinking...';
+            document.getElementById('status').textContent = turn;
+        }
+
+        function botMove() {
+            if (!gameActive) return;
+            
+            const move = getBestMove();
+            makeMove(move, botPlayer);
+        }
+
+        function getBestMove() {
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === '') {
+                    board[i] = botPlayer;
+                    if (checkWin()) {
+                        board[i] = '';
+                        return i;
+                    }
+                    board[i] = '';
+                }
+            }
+            
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === '') {
+                    board[i] = humanPlayer;
+                    if (checkWin()) {
+                        board[i] = '';
+                        return i;
+                    }
+                    board[i] = '';
+                }
+            }
+            
+            if (board[4] === '') return 4;
+            
+            const corners = [0, 2, 6, 8];
+            const availableCorners = corners.filter(i => board[i] === '');
+            if (availableCorners.length > 0) {
+                return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+            }
+            
+            const available = board.map((cell, i) => cell === '' ? i : null).filter(i => i !== null);
+            return available[Math.floor(Math.random() * available.length)];
+        }
+
+        function checkWin() {
+            return winPatterns.some(pattern => {
+                const [a, b, c] = pattern;
+                return board[a] && board[a] === board[b] && board[a] === board[c];
+            });
+        }
+
+        function resetGame() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            
+            if (firstPlayer === botPlayer) {
+                humanPlayer = 'O';
+                botPlayer = 'X';
+                currentPlayer = 'X'; // Bot goes first
+            } else {
+                humanPlayer = 'X';
+                botPlayer = 'O';
+                currentPlayer = 'X'; // Human goes first
+            }
+            
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('taken');
+            });
+            
+            if (currentPlayer === botPlayer) {
+                document.getElementById('status').textContent = 'Bot Goes First...';
+                setTimeout(botMove, 500);
+            } else {
+                document.getElementById('status').textContent = 'Your Turn';
+            }
+        }
+
+        function closeGame() {
+            document.getElementById('ticTacToe').classList.remove('active');
+        }
+
+        initGame();
+        
+        document.getElementById('ticTacToe').classList.add('active');
+
+    </script>
+    </body>
+</html>
