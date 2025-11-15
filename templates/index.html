@@ -27,36 +27,28 @@
                     <div class="window-control close-btn" onclick="closeWindow('window')">x</div>
                 </div>
             </div>
-        </div>
-
-        <div class="window-content">
-            {% for i in history %}
-            <p>{{ i }}</p>
-            {% endfor %}
-            <form method="POST">
-                <div class="input">> <input type="text" name="inp"></div><button type="submit"
-                    style="display: none;"></button>
-            </form>
-        </div>
-        </div>
-        <div id="fileExplorer" class="window" style="left: 150px; top: 200px; width: 400px; height: 500px;">
-            <div class="window-header" onmousedown="startDrag(event,'fileExplorer')">
-                <span>FILE MANAGER v1.0</span>
-                <button onclick="closeWindow('fileExplorer')" class="close-btn">×</button>
-            </div>
-
             <div class="window-content">
-                <div class="explorer-container">
-                    <div class="content" id="fileTree"></div>
-                    <div class="footer" id="status">Ready</div>
+                {% for i in history %}
+                <p>{{ i }}</p>
+                {% endfor %}
+                <form method="POST">
+                    <div class="input">> <input type="text" name="inp"></div><button type="submit"
+                        style="display: none;"></button>
+                </form>
+            </div>
+        </div>
+
+        <div id="fileExplorer" class="window" style="left: 100px; top: 150px;">
+            <div class="window-header" onmousedown="startDrag(event,'fileExplorer')">
+                <span class="window-title">file manager</span>
+                <div class="window-controls">
+                    <div class="window-control close-btn" onclick="closeWindow('fileExplorer')">x</div>
                 </div>
             </div>
-
+            <div class="window-content">
+                {% include 'explorer.html' %}
+            </div>
         </div>
-        <div class="window-content">
-            {% include 'explorer.html' %}
-        </div>
-
         <script src="{{ url_for('static', filename='windows.js') }}"></script>
 
     </body>
