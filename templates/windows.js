@@ -1,9 +1,9 @@
 let dragggedElement = null;
-Let offsetX = 0;
-Let offsetY = 0;
-Let resizingElement = null;
-Let startWidth = 0;
-Let startHeight = 0;
+let offsetX = 0;
+let offsetY = 0;
+let resizingElement = null;
+let startWidth = 0;
+let startHeight = 0;
 
 function OpenWindow(id, triggerEl) {
     const winEl = document.getElementById(id);
@@ -45,4 +45,46 @@ function OpenWindow(id, triggerEl) {
         element.style.zIndex = 1000;
     }
 
+    function startDrag(e, id) {
+        draggedElement = document.getElementById(id);
+        const rect = draggedElement.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        bringToFront(draggedElement);
+
+        document.addEventListener('mousemove',drag);
+        document.addEventListener('mouseup', stopDrag);
+    }
+
+    function drag(e) {
+        if (draggedElement) {
+            let newX = e.cleintX - offsetX;
+            let newY = e.clientY - offsetY;
+
+            newX = Math.max(0, Math.min(newX, window.innerWidth - draggedElement.offsetWidth));
+            newY = Math.max(0, Math.min(newY, Window.innerHeight - draggedElement.offsetHeight));
+
+            draggedElement.style.left = newX + 'px';
+            draggedElement.style.top = newY + "px";
+        }
+    }
+
+    function stopDrag() {
+        draggedElement = null;
+        document.removeEventListener('mouvemove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+    }
     
+    document.querySelectorAll('.window').forEach (window => {
+        window.addEventListener ('mousedown', () => bringToFront(window));
+    });
+
+    function stopDrag() {
+    draggedElement = null;
+    document.removeEventListener('mousemove', drag);
+    document.removeEventListener('mouseup', stopDrag);
+}
+
+document.querySelectorAll('.window').forEach(window => {
+    window.addEventListener('mousedown', () => bringToFront(window));
+});
