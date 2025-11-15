@@ -9,7 +9,7 @@ async function loadFiles() {
 }
 
 function toggleFolder(path) {
-    expanded [path] = !expanded[path];
+    expanded[path] = !expanded[path];
     renderTree();
 }
 
@@ -23,9 +23,9 @@ function renderItem(item, path = '', indent = 0) {
     const currentPath = path ? `${path}/${item.name}` : item.name;
     const isExpanded = expanded[currentPath];
     const isSelected = selected === currentPath;
-    
+
     let html = '';
-    
+
     if (item.type === 'folder') {
         const chevron = isExpanded ? '▼' : '►';
         html += `<div class="item ${isSelected ? 'selected' : ''}" 
@@ -34,7 +34,7 @@ function renderItem(item, path = '', indent = 0) {
                     <span class="chevron">${chevron}</span>
                     <span class="folder">📁 ${item.name}</span>
                  </div>`;
-        
+
         if (isExpanded && item.children) {
             item.children.forEach(child => {
                 html += renderItem(child, currentPath, indent + 1);
@@ -47,7 +47,7 @@ function renderItem(item, path = '', indent = 0) {
                     <span class="file">📄 ${item.name}</span>
                  </div>`;
     }
-    
+
     return html;
 }
 
