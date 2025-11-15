@@ -1,8 +1,13 @@
-.input {
-display: inline;
-outline: none;
-visibility: visible;
+input, textarea, input:focus, textarea:focus{
+  font-family:'Courier New', Courier, monospace;
+  font-size: 16px;
+  outline: none;
+  border: none;
+  background-color:#816271;
+  color:#f6d6bd;
+  border-radius: 5px;
 }
+
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +16,7 @@ visibility: visible;
 
 body {
   font-family:'Courier New', Courier, monospace;
-  background: #ffffff;
+  background: #0f2a3f;
   min-height: 100vh;
   padding: 20px;
   overflow:hidden;
@@ -21,17 +26,15 @@ body {
   text-align: center;
   margin-bottom: 30px;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-
-
 }
 .header h1{
-  color:white;
+  color: #08141e;
   font-size: 40px;
   margin-bottom: 10px;
   text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
 }
 .header p{
-  color: white;
+  color: #08141e;
   font-size: 18px;
 }
 .button-container {
@@ -44,14 +47,14 @@ body {
 
 .window-button {
   padding: 12px 24px;
-  background:#ffffff ;
+  background: #816271 ;
   border: 2px solid;
   border-radius: 8px;
   cursor: pointer;
   font-family: inherit;
   font-size: 14px;
   font-weight: bold;
-  color: #ffffff;
+  color: #08141e;
   outline: 2px;
   box-shadow: 0 3px 6px rgba(29, 33, 30, 0.2);
   transition: all 0.2s;
@@ -70,7 +73,7 @@ body {
 .window {
   position: absolute;
   width: 400px;
-  background: white;
+  background: #816271;
   border: 2px solid;
   border-radius: 8px 8px 0 0;
   box-shadow: 0 8px 20px rgba(0,0,0,0.4);
@@ -93,7 +96,7 @@ body {
 }
 
 .window-title {
-  color: white;
+  color: #08141e;
   font-weight: bold;
   font-size: 14px;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -118,14 +121,14 @@ body {
 }
 .close-btn {
   background: transparent;
-  color: white;
+  color: #c3a38a;
   border: 1px solid rgba(255,255,255,0.15);
   padding: 2px 6px;
   border-radius: 3px;
 }
 
 .close-btn:hover {
-  background: linear-gradient(to bottom, #ff4040 0%, #c93030 100%);
+  background: linear-gradient(to bottom, #f6d6bd 0%, #c3a38a 100%);
 }
 
 .window-content {
@@ -136,13 +139,13 @@ body {
 }
 
 .window-content h2 {
-  color: #ffffff;
+  color: #f6d6bd;
   margin-bottom: 15px;
   font-size: 22px;
 }
 
 .window-content h3 {
-  color: #ffffff;
+  color: #f6d6bd;
   margin-top: 15px;
   margin-bottom: 8px;
   font-size: 16px;
