@@ -6,12 +6,12 @@
     </head>
     <body>
     <div class="button-container">
-    <button class="window-button" onclick="OpenWindow('window', this)">window</button>
+    <button class="window-button" onclick="OpenWindow('window', this)">terminal</button>
     </div>
     
     <div id="window" class="window" style="left: 100px; top: 150px;">
         <div class="window-header" onmousedown="startDrag(event,'window')">
-            <span class="window-title">window</span>
+            <span class="window-title">terminal</span>
             <div class="window-controls">
                 <div class="window-control close-btn" onclick="closeWindow('window')">x</div>
              </div>
@@ -21,7 +21,7 @@
             {% for i in history %}
             <p>{{ i }}</p>
             {% endfor %}
-            <form method="POST" action="submit"><div class="input" >><input type="text" name="inp"></div><button type="submit" style="display: none;"></button></form>
+            <form method="POST"><div class="input" >> <input type="text" name="inp"></div><button type="submit" style="display: none;"></button></form>
         </div>
     </div>
 
