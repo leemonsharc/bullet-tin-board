@@ -2,6 +2,24 @@ let draggedElement = null;
 let offsetX = 0;
 let offsetY = 0;
 
+document.querySelectorAll('.window').forEach(win => {
+    const saved = localStorage.getItem("winstate_" + win.id);
+    if (!saved) return;
+
+    const state = JSON.parse(saved);
+
+    if (state.left) win.style.left = state.left;
+    if (state.top) win.style.top = state.top;
+    if (state.width) win.style.width = state.width;
+    if (state.height) win.style.height = state.height;
+
+    if (state.active) {
+        win.classList.add('active');
+    } else {
+        win.classList.remove('active');
+    }
+});
+
 function OpenWindow(id, triggerEl) {
     const winEl = document.getElementById(id);
     if (!winEl) return;
@@ -14,6 +32,7 @@ function OpenWindow(id, triggerEl) {
     }
 
     winEl.classList.add('active');
+    saveWindowState(winEl)
     bringToFront(winEl);
 
     if (triggerEl && typeof triggerEl.getBoundingClientRect === 'function') {
@@ -32,7 +51,9 @@ function OpenWindow(id, triggerEl) {
 }
 
 function closeWindow(id) {
-    document.getElementById(id).classList.remove('active');
+    const win = document.getElementById(id)
+    win.classList.remove('active');
+    saveWindowState(win)
 }
 
 function bringToFront(element) {
@@ -65,7 +86,19 @@ function drag(e) {
     }
 }
 
+function saveWindowState(win) {
+    const state = {
+        left: win.style.left,
+        top: win.style.top,
+        width: win.style.width,
+        height: win.style.height,
+        active: win.classList.contains('active')
+    };
+    localStorage.setItem("winstate_" + win.id, JSON.stringify(state));
+}
+
 function stopDrag() {
+    saveWindowState(draggedElement)
     draggedElement = null;
     document.removeEventListener('mousemove', drag);
     document.removeEventListener('mouseup', stopDrag);
