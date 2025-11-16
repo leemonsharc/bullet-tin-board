@@ -1,3 +1,24 @@
+let fileSystem = null;
+let expanded = {};
+let selected = null;
+
+async function loadFiles() {
+    const response = await fetch('/api/files');
+    fileSystem = await response.json();
+    renderTree();
+}
+
+function toggleFolder(path) {
+    expanded[path] = !expanded[path];
+    renderTree();
+}
+
+function selectItem(path) {
+    selected = path;
+    document.getElementById('status').textContent = `Selected: ${path}`;
+    renderTree();
+}
+
 function renderItem(item, path = '', indent = 0) {
     let currentPath;
     if (path === 'C:\\') {
@@ -37,3 +58,35 @@ function renderItem(item, path = '', indent = 0) {
 
     return html;
 }
+
+function executeFile(path) {
+    if (path.includes('TICTACTOE.EXE')) {
+        document.getElementById('ticTacToe').classList.add('active');
+    }
+}
+
+function renderTree() {
+    const tree = document.getElementById('fileTree');
+    let html = '';
+    
+    if (fileSystem) {
+        const isExpanded = expanded[fileSystem.name];
+        const chevron = isExpanded ? '▼' : '►';
+        html += `<div class="item" 
+                      onclick="toggleFolder('${fileSystem.name}'); selectItem('${fileSystem.name}')"
+                      style="margin-left: 0px">
+                    <span class="chevron">${chevron}</span>
+                    <span class="folder">📁 ${fileSystem.name}</span>
+                 </div>`;
+        
+        if (isExpanded && fileSystem.children) {
+            fileSystem.children.forEach(child => {
+                html += renderItem(child, fileSystem.name, 1);
+            });
+        }
+    }
+    
+    tree.innerHTML = html;
+}
+
+loadFiles();
