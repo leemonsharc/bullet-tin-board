@@ -3,7 +3,7 @@ input, textarea, input:focus, textarea:focus{
   font-size: 16px;
   outline: none;
   border: none;
-  background-color:#816271;
+  background-color:#121212;
   color:#f6d6bd;
   border-radius: 5px;
 }
@@ -47,7 +47,7 @@ body {
 
 .window-button {
   padding: 12px 24px;
-  background: #816271 ;
+  background: #131313 ;
   border: 2px solid;
   border-radius: 8px;
   cursor: pointer;
@@ -73,7 +73,7 @@ body {
 .window {
   position: absolute;
   width: 400px;
-  background: #816271;
+  background: #161616;
   border: 2px solid;
   border-radius: 8px 8px 0 0;
   box-shadow: 0 8px 20px rgba(0,0,0,0.4);
