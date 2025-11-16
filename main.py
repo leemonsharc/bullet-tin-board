@@ -396,7 +396,6 @@ def get_file_content(filepath):
         'CONFIG.SYS': 'DEVICE=HIMEM.SYS\nFILES=40\nBUFFERS=20',
         'AUTOEXEC.BAT': '@ECHO OFF\nPROMPT $P$G\nPATH C:\\DOS;C:\\WINDOWS'    }
     
-    # Extract just the filename from the path (handles both \ and /)
     filename = filepath.replace('\\', '/').split('/')[-1]
     content = content_map.get(filename, f'Contents of {filename}')
     
@@ -404,6 +403,10 @@ def get_file_content(filepath):
         'name': filename,
         'content': content
     })
+
+@app.route('/')
+    def index():
+    return render_template('index.html')
 #END OF FILE SYSTEM STUFF
 
 if __name__ == '__main__':

@@ -12,11 +12,16 @@
         <button onclick="OpenWindow('fileExplorer', this)" class="window-button">File Explorer</button>
     </div>
 l
-    <audio controls autoplay loop>
-        <source src="Good Kid - Alchemist (8-bit).mp3" type="audio/mp3">
-        <source src="Good Kid - Tell Me You Know (8-bit).mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
+<audio id="a" controls loop>
+  <source src="{{ url_for('static', filename='Good Kid - Alchemist (8-bit).mp3') }}" type="audio/mpeg">
+</audio>
+
+<script>
+window.addEventListener('click', () => {
+  document.getElementById('a').play().catch(e => console.error(e));
+}, {once:true});
+</script>
+
 
     <div id="window" class="window" style="left: 100px; top: 150px;">
         <div class="window-header" onmousedown="startDrag(event,'window')">
