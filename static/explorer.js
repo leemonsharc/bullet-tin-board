@@ -29,13 +29,14 @@ function renderItem(item, path = '', indent = 0) {
     
     const isExpanded = expanded[currentPath];
     const isSelected = selected === currentPath;
+    const escapedPath = currentPath.replace(/\\/g, '\\\\');
 
     let html = '';
 
     if (item.type === 'folder') {
         const chevron = isExpanded ? '▼' : '►';
         html += `<div class="item ${isSelected ? 'selected' : ''}" 
-                      onclick="toggleFolder('${currentPath}'); selectItem('${currentPath}')"
+                      onclick="toggleFolder('${escapedPath}'); selectItem('${escapedPath}')"
                       style="margin-left: ${indent * 20}px">
                     <span class="chevron">${chevron}</span>
                     <span class="folder">📁 ${item.name}</span>
@@ -49,8 +50,8 @@ function renderItem(item, path = '', indent = 0) {
 
     } else {
         html += `<div class="item ${isSelected ? 'selected' : ''}"
-                  onclick="selectItem('${currentPath}')"
-                  ondblclick="executeFile('${currentPath}')"
+                  onclick="selectItem('${escapedPath}')"
+                  ondblclick="executeFile('${escapedPath}')"
                   style="margin-left: ${(indent + 1) * 20}px">
                 <span class="file">📄 ${item.name}</span>
              </div>`;
@@ -72,8 +73,9 @@ function renderTree() {
     if (fileSystem) {
         const isExpanded = expanded[fileSystem.name];
         const chevron = isExpanded ? '▼' : '►';
+        const escapedName = fileSystem.name.replace(/\\/g, '\\\\');
         html += `<div class="item" 
-                      onclick="toggleFolder('${fileSystem.name}'); selectItem('${fileSystem.name}')"
+                      onclick="toggleFolder('${escapedName}'); selectItem('${escapedName}')"
                       style="margin-left: 0px">
                     <span class="chevron">${chevron}</span>
                     <span class="folder">📁 ${fileSystem.name}</span>
@@ -89,10 +91,4 @@ function renderTree() {
     tree.innerHTML = html;
 }
 
-function toggleFolder(path) {
-    expanded[path] = !expanded[path];
-    console.log('Toggled:', path, 'Expanded:', expanded[path]);
-    console.log('All expanded:', expanded);
-    renderTree();
-}
 loadFiles();
