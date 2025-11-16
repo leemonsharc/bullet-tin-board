@@ -63,6 +63,7 @@ function renderItem(item, path = '', indent = 0) {
 function executeFile(path) {
     if (path.includes('TICTACTOE')) {
         document.getElementById('ticTacToe').classList.add('active');
+        setTimeout(initGame, 100);
     }
 }
 
