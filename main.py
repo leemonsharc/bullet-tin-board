@@ -404,9 +404,6 @@ def get_file_content(filepath):
         'content': content
     })
 
-@app.route('/')
-    def index():
-    return render_template('index.html')
 #END OF FILE SYSTEM STUFF
 
 if __name__ == '__main__':
