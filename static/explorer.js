@@ -63,7 +63,7 @@ function executeFile(path) {
     }
 }
 function renderTree() {
-    const tree = document.getElementById('file-tree');
+    const tree = document.getElementById('fileTree');
     tree.innerHTML = renderItem(fileSystem);
 }
 
