@@ -92,7 +92,7 @@ FILE_SYSTEM = {
             'type': 'folder',
             'children': [
                 {'name': 'FLAPPY.EXE', 'type': 'file'},
-                {'name:': 'TICTACTOE.EXE', 'type': 'file', 'executable': True}
+                {'name': 'TICTACTOE.EXE', 'type': 'file', 'executable': True}
             ]
         },
         {
@@ -108,16 +108,21 @@ FILE_SYSTEM = {
     ]
 }
 
-
-
 def getLS(dir):
-    sys = FILE_SYSTEM
-    f = 0
-    for i in sys:
-        f += 1
-        if i == dir:
-            return sys[f].children
+    def traverse_folder(folder, path):
+        if folder['name'] == path:
+            return folder.get('children', [])
+        if 'children' in folder:
+            for child in folder['children']:
+                if child['type'] == 'folder':
+                    result = traverse_folder(child, path)
+                    if result is not None:
+                        return result
+        return None
 
+    if dir == 'C:\\':
+        return FILE_SYSTEM['children']
+    return traverse_folder(FILE_SYSTEM, dir)
 
 #END OF FILE SYSTEM STUFF
 def processCommand(command):
