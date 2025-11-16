@@ -107,3 +107,150 @@ function stopDrag() {
 document.querySelectorAll('.window').forEach(window => {
     window.addEventListener('mousedown', () => bringToFront(window));
     });
+
+
+    //ttt stuff
+let currentPlayer = 'X';
+let tttBoard = ['', '', '', '', '', '', '', '', ''];
+let gameActive = true;
+let humanPlayer = 'X';
+let botPlayer = 'O';
+let lastWinner = null;
+
+const winPatterns = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
+];
+
+function initTicTacToe() {
+    const boardEl = document.getElementById('board');
+    if (!boardEl) return;
+    
+    boardEl.innerHTML = '';
+    tttBoard = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    currentPlayer = humanPlayer;
+    
+    for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        cell.addEventListener('click', handleCellClick);
+        boardEl.appendChild(cell);
+    }
+
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+        resetBtn.removeEventListener('click', resetGame);
+        resetBtn.addEventListener('click', resetGame);
+    }
+    
+    document.getElementById('status').textContent = 'Your Turn';
+}
+
+function handleCellClick(e) {
+    const index = e.target.dataset.index;
+    
+    if (tttBoard[index] !== '' || !gameActive || currentPlayer !== humanPlayer) return;
+    
+    makeMove(index, humanPlayer);
+    
+    if (gameActive) {
+        setTimeout(botMove, 500);
+    }
+}
+
+function makeMove(index, player) {
+    tttBoard[index] = player;
+    const cells = document.querySelectorAll('#board .cell');
+    cells[index].textContent = player;
+    cells[index].classList.add('taken');
+    
+    if (checkWin()) {
+        lastWinner = player;
+        const winner = player === humanPlayer ? 'You Win!' : 'Bot Wins!';
+        document.getElementById('status').textContent = winner;
+        gameActive = false;
+        return;
+    }
+    
+    if (tttBoard.every(cell => cell !== '')) {
+        document.getElementById('status').textContent = 'Draw!';
+        gameActive = false;
+        lastWinner = null;
+        return;
+    }
+    
+    currentPlayer = player === humanPlayer ? botPlayer : humanPlayer;
+    const turn = currentPlayer === humanPlayer ? 'Your Turn' : 'Bot Thinking...';
+    document.getElementById('status').textContent = turn;
+}
+
+function botMove() {
+    if (!gameActive) return;
+    
+    const move = getBestMove();
+    makeMove(move, botPlayer);
+}
+
+function getBestMove() {
+    for (let i = 0; i < 9; i++) {
+        if (tttBoard[i] === '') {
+            tttBoard[i] = botPlayer;
+            if (checkWin()) {
+                tttBoard[i] = '';
+                return i;
+            }
+            tttBoard[i] = '';
+        }
+    }
+    
+    for (let i = 0; i < 9; i++) {
+        if (tttBoard[i] === '') {
+            tttBoard[i] = humanPlayer;
+            if (checkWin()) {
+                tttBoard[i] = '';
+                return i;
+            }
+            tttBoard[i] = '';
+        }
+    }
+    
+    if (tttBoard[4] === '') return 4;
+    
+    const corners = [0, 2, 6, 8];
+    const availableCorners = corners.filter(i => tttBoard[i] === '');
+    if (availableCorners.length > 0) {
+        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+    }
+    
+    const available = tttBoard.map((cell, i) => cell === '' ? i : null).filter(i => i !== null);
+    return available[Math.floor(Math.random() * available.length)];
+}
+
+function checkWin() {
+    return winPatterns.some(pattern => {
+        const [a, b, c] = pattern;
+        return tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c];
+    });
+}
+
+function resetGame() {
+    tttBoard = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    
+    document.querySelectorAll('#board .cell').forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('taken');
+    });
+    
+    if (lastWinner === botPlayer) {
+        currentPlayer = botPlayer;
+        document.getElementById('status').textContent = 'Bot Goes First...';
+        setTimeout(botMove, 500);
+    } else {
+        currentPlayer = humanPlayer;
+        document.getElementById('status').textContent = 'Your Turn';
+    }
+}
