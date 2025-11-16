@@ -20,7 +20,14 @@ function selectItem(path) {
 }
 
 function renderItem(item, path = '', indent = 0) {
-    const currentPath = path ? `${path}/${item.name}` : item.name;
+    // Build the current path correctly, handling the root's backslash
+    let currentPath;
+    if (path === 'C:\\') {
+        currentPath = `C:\\${item.name}`;
+    } else {
+        currentPath = path ? `${path}/${item.name}` : item.name;
+    }
+    
     const isExpanded = expanded[currentPath];
     const isSelected = selected === currentPath;
 
