@@ -1,8 +1,9 @@
 from flask import Flask, request, render_template, jsonify
-
+from flask import flask_socketio
 connected = 0
 logstatus = 0
 slotsUnlocked = False
+
 
 zephyrLSSC = """west-wind -- General chat<br>
 fan-fans -- Get coding support and talk about CS projects<br>
@@ -55,7 +56,7 @@ zephyrfanfans = """@quillit: Have you heard of the Tin Board?<br>
 @quillit: though<br>
 @ant-aunt: How?<br>
 @quillit: Hard to describe... it just was special.<br>
-@quillit: The idea was actually born here though. Some people were brought together, and it wouldn't have existed if those people weren't on and weren't chatting in that chat room at that specific moment. Very, very long time ago in this chat room.<br>
+@quillit: The idea was actually born here though. Some people were brought together, and it wouldn't have existed if those people weren't on and weren't chatting in that chat room at that specific moment. Very, very long time ago in this chat room. I wonder if I can salvage any data from it from my NETWORK SAVE<br>
 @ant-aunt: Interesting<br>
 @quillit: ...i should go log on it<br>
 @quillit: wait<br>
@@ -74,6 +75,137 @@ zephyrboreas = """@gig-jig: Did you see that new bbs hosting system?<br>
 @vivir-day: ?? gig??<br>
 @gig-jig: west-wind<br>
 @MOD: **THIS CHAT IS READ-ONLY UNTIL FUTURE NOTICE.**"""
+
+aetherLSSC = """eurus -- no description<br>
+notos -- no description<br>
+bigapl -- no description<br>"""
+
+aethereurus = """@snookie: sorry guys my cat knocked over my drink again<br>
+@amarylisss: lol again?<br>
+@snookie: yeah he's been a real troublemaker lately<br>
+@quillit: hey has anyone been able to get on tin board?<br>
+@amarylisss: no it's still down<br>
+@snookie: what's tin board?<br>
+@gig-jig: only the best bbs that ever existed<br>
+@snookie: oh interesting. my cat just jumped on my keyboard<br>
+@quillit: snookie your cat sounds like a menace<br>
+@snookie: he is but i love him<br>
+@amarylisss: what's his name?<br>
+@snookie: whiskers. very original i know<br>
+@gig-jig: tin board has been offline for like a week now<br>
+@snookie: huh weird. anyway brb cat problems<br>
+@quillit: yeah someone's holding it hostage or something<br>
+@amarylisss: that's wild<br>
+@snookie: ok back he was trying to eat my headphone cord<br>
+@amarylisss: snookie you said you knew about tin board earlier?<br>
+@snookie: no i asked what it was<br>
+@quillit: you seemed really interested when gig mentioned it though<br>
+@snookie: i mean it sounded cool i guess<br>
+@snookie: wait did i say something? my cat was walking on my keys<br>
+@amarylisss: ...right<br>
+@gig-jig: anyway if anyone figures out the tin board thing let me know<br>
+@snookie: yeah let me know too. for curiosity."""
+
+aethernotos = """@vivir-day: reminder that Server maintenance is scheduled for next tuesday<br>
+@ant-aunt: thanks for the heads up<br>
+@vivir-day: also the music swap meet is happening this weekend if anYone waNts to participate<br>
+@jaybird: i'll bring some recOrds<br>
+@ant-aunt: what time?<br>
+@vivir-day: starts at 2pm, goes until wheNever<br>
+@jaybird: sounds good<br>
+@ant-aunt: communitY server went down again btw<br>
+@vivir-day: seriously? that's the third tiMe this mOnth<br>
+@ant-aunt: yeah so the school kids are stuck watching the old vcr tapes For movie day<br>
+@jaybird: at least those still work<br>
+@vivir-day: has anyone else noticed the police have Been aRound mOre?<br>
+@ant-aunt: yeah they've been asking abOut electronics<br>
+@jaybird: they came by the radio shacK yesterday asking queStions<br>
+@vivir-day: what kind of quesTions?<br>
+@jaybird: who's been buying whAt, if anyone's been acTing WeIrd<br>
+@ant-aunt: i heard someone in Town might've been doing something sketcHy on their computer<br>
+@vivir-day: like what?<br>
+@ant-aunt: no idea but the copS seem pretty interested<br>
+@jaybird: weird times<br>
+@vivir-day: newsletter goes out friday, send me any announcements by thursday<br>
+@ant-aunt: will do"""
+
+aetherbigapl = """@tech-wizard: JUST FINISHED MY 4TH CELSIUS<br>
+@code-goblin: bro it's 2pm calm down<br>
+@tech-wizard: PARTHENON IS IN 3 DAYS I NEED TO BE READY<br>
+@byte-knight: why is there only celsius left<br>
+@code-goblin: WHERE DID ALL THE ALANI GO<br>
+@tech-wizard: AND NO MONSTER??? THIS IS A CRISIS<br>
+@byte-knight: parthenon is gonna be insane this year<br>
+@code-goblin: if i see one more game where everyone just dies i'm gonna lose it<br>
+@tech-wizard: what's wrong with death games?<br>
+@code-goblin: there's been 50 OF THEM IN THE LAST 3 DAYS<br>
+@byte-knight: skill issue<br>
+@code-goblin: SKILL ISSUE??? they're ALL THE SAME!<br>
+@tech-wizard: hey does anyone have starbursts<br>
+@byte-knight: random but yeah i have some<br>
+@tech-wizard: can i have the pink ones<br>
+@byte-knight: absolutely not<br>
+@code-goblin: the disrespect<br>
+@tech-wizard: FINE keep your pink starbursts<br>
+@code-goblin: anyway back to these death games<br>
+@byte-knight: just don't play them?<br>
+@code-goblin: but what if one of them is actually good<br>
+@tech-wizard: they're not<br>
+@code-goblin: yeah you're probably right<br>
+@byte-knight: anyone got access to that new board?<br>
+@tech-wizard: which one<br>
+@byte-knight: cascade.underground.net<br>
+@code-goblin: never heard of it<br>
+@byte-knight: user is [VIEW NOTOS] password is [REDACTED] [VIEW C:\SYSTEM CONFIG]<br>
+@tech-wizard: *CHUGS CELSIUS* STOP SPEAKING IN RIDDLES<br>
+@code-goblin: dude you're gonna have a heart attack<br>
+@tech-wizard: WORTH IT FOR PARTHENON"""
+
+cascadeLSSC = """babble<br>
+the-mountains<br>"""
+
+cascadebabble = """@MOD: Messages deleted.<br>
+@byte-knight: WHAT
+@fifififi: WHAT
+@vivir-day: WHAT
+@ire-synth: crazy thing to admitt on cascade
+@snookie: mistyped ssorryp
+@snookie: cat
+@fifififi: craziest mistype ever???
+@cave-caave: no shot that was a mistype
+@ire-synth: snookie????
+@snookie: wwonrg chanell
+@vivir-day: snookie what are you UP to?????
+@snookie: jst cat
+@ire-synth: bro just admit it already
+@MOD: Message deleted.
+@ire-synth: we all know it
+@ire-synth: you can't hide it forever.
+@MOD: User ire-synth has been banned.
+@cave-caave: HELLO??????
+@fifififi: craziest cascade night of my life
+@vivir-day: ?????
+@ant-aunt: waht did i miss
+@vivir-day: ant-aunt check ocean-view then ocean view"""
+
+cascadethemountains = """@snookie: does this picture look good
+@MOD: [DELETED PLEASE VIEW IN [documents]] cattu.jpg
+@gig-jig: bro? what is that image??
+@snookie: what do you think
+@gig-jig: ???
+@cave-caave: wdym 'does this look good'
+@snookie: does it look good
+@cave-caave: your cat looks great man i don know what you tell ya
+@snookie: good."""
+
+cascadeoceanview = """@snookie: i think i need to shut down tin board
+@cvs: ? why?
+@snookie: you know why.
+@kingmimi: oh the police
+@cvs: police???
+@jaybird: 
+
+"""
 
 #STUFF FOR THE FILE EXPLORER
 def get_file_system():
@@ -107,7 +239,8 @@ def get_file_system():
                 'type': 'folder',
                 'children': [
                     {'name': 'README.TXT', 'type': 'file'},
-                    {'name': 'MANUAL.DOC', 'type': 'file'}
+                    {'name': 'MANUAL.DOC', 'type': 'file'},
+                    {'name': 'CATTU.PNG', 'type': 'file'}
                 ]
             },
             {'name': 'COMMAND.COM', 'type': 'file'},
@@ -178,6 +311,10 @@ cls -- clears the terminal history
             connected = 2
             logstatus = 1
             output = "Connecting to covert.aether.net...<br>Please enter in your username."
+        elif cmdSplits[2] == "cascade.aether.net":
+            connected = 3
+            logstatus = 1
+            output = "Connecting to cascade.underground.net...<br>Please enter in your username."
         else:
             output = "The server you are looking for does not exist. Please make sure the address you are typing in is correct."
     else:
@@ -193,6 +330,11 @@ cls -- clears the terminal history
 
 #user: paper
 #password: fan-fans
+
+#cascade.underground.net
+
+#user: stream
+#password: waterfall
 
 def bbsProcessor(command):
     output = ""
@@ -227,7 +369,6 @@ def bbsProcessor(command):
                 logstatus = 0
                 output = "Username not found. Disconnected."
         elif connected == 2: #covert
-            print("connected 2")
             if len(cmdSplits) > 1:
                 print("too long")
                 connected = 0
@@ -242,7 +383,18 @@ def bbsProcessor(command):
                 connected = 0
                 logstatus = 0
                 output = "Username not found. Disconnected."
-            return output
+        elif connected == 3: #cascade
+            if len(cmdSplits) > 1:
+                connected = 0
+                logstatus = 0
+                output = "Error: No spaces allowed in names. Disconnected."
+            elif command == "stream":
+                logstatus = 2
+                output = "Username found.<br>Please enter in your password"
+            else:
+                connected = 0
+                logstatus = 0
+                output = "Username not found. Disconnected."
     elif logstatus == 2:
         if connected == 1: #zephyr
             if len(cmdSplits) > 1:
@@ -268,7 +420,21 @@ def bbsProcessor(command):
                 connected = 0
                 logstatus = 0
                 output = "Error: Incorrect password. Disconnected."
-            return
+        elif connected == 3: #cascade
+            if len(cmdSplits) > 1:
+                connected = 0
+                logstatus = 0
+                output = "Error: No spaces allowed in names. Disconnected."
+            elif command == "waterfall":
+                global slotsUnlocked
+                slotsUnlocked = True
+                logstatus = 3
+                output = """Password correct! Welcome, stream, to Cascade~"""
+            else:
+                connected = 0
+                logstatus = 0
+                output = "Error: Incorrect password. Disconnected."
+        
         
 
     #CONNECTED TO A SERVER
@@ -289,6 +455,13 @@ ls-sc -- list available subchats<br>
 cn-sc [subchat] -- connect to an available subchat<br>
 disconnect -- disconnect from Covert Aether
                 """
+            elif connected == 3:
+                output = """
+help (or) /? -- display this message<br>
+ls-sc -- list available subchats<br>
+cn-sc [subchat] -- connect to an available subchat<br>
+disconnect -- disconnect from Cascade
+                """
         elif command == "disconnect":
             if connected == 1:
                 connected = 0
@@ -298,6 +471,13 @@ disconnect -- disconnect from Covert Aether
                 connected = 0
                 logstatus = 0
                 output = """Disconnected from covert.aether.net."""
+            elif connected == 3:
+                connected = 0
+                logstatus = 0
+                output = """Disconnected from cascade.underground.net."""
+
+
+
         elif connected == 1:
             if command == "ls-sc":
                 output = f"""LIST OF SUBCHATS:<br>
@@ -321,9 +501,52 @@ disconnect -- disconnect from Covert Aether
             
             else:
                 output = helpSuggestion
+
+
+
+
         elif connected == 2:
             #all other covert aether commands
-            return
+
+            if command == "ls-sc":
+                output = f"""LIST OF SUBCHATS:<br>
+{aetherLSSC}
+                """
+            elif cmdSplits[0] == "cn-sc":
+                if len(cmdSplits) < 1:
+                    output = "Error: Too few arguments. Please type cn-sc [subchat] to connect to a subchat."
+                if len(cmdSplits) > 2:
+                    output = "Error: Too many arguments. Please type cn-sc [subchat] to connect to a subchat."
+                elif cmdSplits[1] == "eurus":
+                    output = f"""~#eurus~<br>
+                    {aethereurus}"""
+                elif cmdSplits[1] == "notos":
+                    output = f"""~#notos~<br>
+                    {aethernotos}"""
+                elif cmdSplits[1] == "bigapl":
+                    output = f"""~#bigapl~<br>
+                    {aetherbigapl}"""
+        
+            elif connected == 3
+                output = f"""LIST OF SUBCHATS:<br>
+{cascadeLSSC}
+                """
+            elif cmdSplits[0] == "cn-sc":
+                if len(cmdSplits) < 1:
+                    output = "Error: Too few arguments. Please type cn-sc [subchat] to connect to a subchat."
+                if len(cmdSplits) > 2:
+                    output = "Error: Too many arguments. Please type cn-sc [subchat] to connect to a subchat."
+                elif cmdSplits[1] == "babble":
+                    output = f"""*#babble*<br>
+                    {cascadebabble}"""
+                elif cmdSplits[1] == "the-mountains":
+                    output = f"""*#the-mountains*<br>
+                    {cascadethemountains}"""
+                elif cmdSplits[1] == "ocean-view":
+                    output = f"""*#ocean-view*<br>
+                    {cascadeoceanview}"""
+
+            
     else:
         connected = 0
         logstatus = 0
@@ -331,7 +554,13 @@ disconnect -- disconnect from Covert Aether
     return output
 
 app = Flask(__name__)
-history = []
+socketio = SocketIO(app, logge=True)
+clients = 0
+history = {}
+@socketio.on("connect", namespace="/")
+def connect():
+    clients += 1
+    history[clients] = []
     
 @app.route('/')
 def index():
@@ -390,10 +619,10 @@ def get_file_content(filepath):
     )
     
     content_map = {
-        'README.TXT': 'Welcome to Bullet-Tin Board!\n\nThis is a demo file system made for the Bullet-Tin Board project.\n Feel free to explore the files and folders.\n Made @ Parthenon 2025!!!',
+        'README.TXT': 'Welcome to Bullet-Tin Board!\n\nThis is a demo file system made for the Bullet-Tin Board project.\n PASS: i-am-so-cool\n USER: blue-fire\n Made @ Parthenon 2025!!!',
         'NETWORK_SAVE.TXT': f'Network Configuration:\n ...\nSaved data:\n COVERT.AETHER.NET\n\n{chat_log}',
         'MANUAL.DOC': 'MANUAL\n======\n\n1. Use the file explorer\n2. Double-click files to open... (pretty self explanitory BTW some files will actually work - take a look)\n3. Enjoy!',
-        'CONFIG.SYS': 'DEVICE=HIMEM.SYS\nFILES=40\nBUFFERS=20',
+        'CONFIG.SYS': 'WATTAGE USED = 42\nALLOCATED RAM =670\nTEMP FILES = 38\nECC ENABLED = TRUE\nROUTER = CONNECTED\nFIRMWARE UPDATED = YES\nANTIVIRUS = ENABLED\nLATENCY = 40.107ms\nLAN = DISABLED', 
         'AUTOEXEC.BAT': '@ECHO OFF\nPROMPT $P$G\nPATH C:\\DOS;C:\\WINDOWS'    }
     
     filename = filepath.replace('\\', '/').split('/')[-1]
@@ -403,7 +632,8 @@ def get_file_content(filepath):
         'name': filename,
         'content': content
     })
-
+    
+    
 #END OF FILE SYSTEM STUFF
 
 if __name__ == '__main__':
