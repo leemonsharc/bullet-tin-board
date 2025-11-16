@@ -51,14 +51,15 @@
 
         <div class="window-content">
             <div class="game-container">
-                <div class="status" id="status">Your Turn</div>
-                <div class="board" id="board"></div>
-                <button class="reset-btn" id="resetBtn">NEW GAME</button>
+                <div class="status" id="tttStatus">Your Turn</div>
+                <div class="board" id="tttBoard"></div>
+                <button class="reset-btn" id="tttResetBtn">NEW GAME</button>
             </div>
         </div>
     </div>
 
     <script src="{{ url_for('static', filename='windows.js') }}"></script>
+    <script src="{{ url_for('static', filename='explorer.js') }}"></script>
 
 </body>
 

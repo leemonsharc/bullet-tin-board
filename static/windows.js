@@ -106,10 +106,9 @@ function stopDrag() {
 
 document.querySelectorAll('.window').forEach(window => {
     window.addEventListener('mousedown', () => bringToFront(window));
-    });
+});
 
 
-    //ttt stuff
 let currentPlayer = 'X';
 let tttBoard = ['', '', '', '', '', '', '', '', ''];
 let gameActive = true;
@@ -124,8 +123,11 @@ const winPatterns = [
 ];
 
 function initTicTacToe() {
-    const boardEl = document.getElementById('board');
-    if (!boardEl) return;
+    const boardEl = document.getElementById('tttBoard');
+    if (!boardEl) {
+        console.error('Board element not found!');
+        return;
+    }
     
     boardEl.innerHTML = '';
     tttBoard = ['', '', '', '', '', '', '', '', ''];
@@ -140,13 +142,14 @@ function initTicTacToe() {
         boardEl.appendChild(cell);
     }
 
-    const resetBtn = document.getElementById('resetBtn');
+    const resetBtn = document.getElementById('tttResetBtn');
     if (resetBtn) {
         resetBtn.removeEventListener('click', resetGame);
         resetBtn.addEventListener('click', resetGame);
     }
     
-    document.getElementById('status').textContent = 'Your Turn';
+    const statusEl = document.getElementById('tttStatus');
+    if (statusEl) statusEl.textContent = 'Your Turn';
 }
 
 function handleCellClick(e) {
@@ -163,20 +166,22 @@ function handleCellClick(e) {
 
 function makeMove(index, player) {
     tttBoard[index] = player;
-    const cells = document.querySelectorAll('#board .cell');
+    const cells = document.querySelectorAll('#tttBoard .cell');
     cells[index].textContent = player;
     cells[index].classList.add('taken');
+    
+    const statusEl = document.getElementById('tttStatus');
     
     if (checkWin()) {
         lastWinner = player;
         const winner = player === humanPlayer ? 'You Win!' : 'Bot Wins!';
-        document.getElementById('status').textContent = winner;
+        if (statusEl) statusEl.textContent = winner;
         gameActive = false;
         return;
     }
     
     if (tttBoard.every(cell => cell !== '')) {
-        document.getElementById('status').textContent = 'Draw!';
+        if (statusEl) statusEl.textContent = 'Draw!';
         gameActive = false;
         lastWinner = null;
         return;
@@ -184,7 +189,7 @@ function makeMove(index, player) {
     
     currentPlayer = player === humanPlayer ? botPlayer : humanPlayer;
     const turn = currentPlayer === humanPlayer ? 'Your Turn' : 'Bot Thinking...';
-    document.getElementById('status').textContent = turn;
+    if (statusEl) statusEl.textContent = turn;
 }
 
 function botMove() {
@@ -240,17 +245,19 @@ function resetGame() {
     tttBoard = ['', '', '', '', '', '', '', '', ''];
     gameActive = true;
     
-    document.querySelectorAll('#board .cell').forEach(cell => {
+    document.querySelectorAll('#tttBoard .cell').forEach(cell => {
         cell.textContent = '';
         cell.classList.remove('taken');
     });
     
+    const statusEl = document.getElementById('tttStatus');
+    
     if (lastWinner === botPlayer) {
         currentPlayer = botPlayer;
-        document.getElementById('status').textContent = 'Bot Goes First...';
+        if (statusEl) statusEl.textContent = 'Bot Goes First...';
         setTimeout(botMove, 500);
     } else {
         currentPlayer = humanPlayer;
-        document.getElementById('status').textContent = 'Your Turn';
+        if (statusEl) statusEl.textContent = 'Your Turn';
     }
 }

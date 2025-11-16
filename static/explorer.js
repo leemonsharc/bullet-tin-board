@@ -15,7 +15,8 @@ function toggleFolder(path) {
 
 function selectItem(path) {
     selected = path;
-    document.getElementById('status').textContent = `Selected: ${path}`;
+    const statusEl = document.getElementById('explorerStatus');
+    if (statusEl) statusEl.textContent = `Selected: ${path}`;
     renderTree();
 }
 
@@ -62,8 +63,17 @@ function renderItem(item, path = '', indent = 0) {
 
 function executeFile(path) {
     if (path.includes('TICTACTOE')) {
-        document.getElementById('ticTacToe').classList.add('active');
-        setTimeout(initGame, 100);
+        OpenWindow('ticTacToe');
+        setTimeout(initTicTacToe, 100);
+    }
+}
+
+function executeFile(path) {
+    console.log('executeFile called with:', path);
+    if (path.includes('TICTACTOE')) {
+        console.log('Opening tic tac toe...');
+        OpenWindow('ticTacToe');
+        setTimeout(initTicTacToe, 100);
     }
 }
 
