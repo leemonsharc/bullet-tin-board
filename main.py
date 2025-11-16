@@ -179,6 +179,9 @@ cls -- clears the terminal history\n
 
 #covert aether Log-in
 
+#user: paper
+#password: fan-fans
+
 def bbsProcessor(command):
     output = ""
     global workingDir
