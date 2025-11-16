@@ -27,7 +27,7 @@ function renderItem(item, path = '', indent = 0) {
     } else {
         currentPath = path ? `${path}/${item.name}` : item.name;
     }
-    
+
     const isExpanded = expanded[currentPath];
     const isSelected = selected === currentPath;
     const escapedPath = currentPath.replace(/\\/g, '\\\\');
@@ -80,7 +80,7 @@ function executeFile(path) {
 function renderTree() {
     const tree = document.getElementById('fileTree');
     let html = '';
-    
+
     if (fileSystem) {
         const isExpanded = expanded[fileSystem.name];
         const chevron = isExpanded ? '▼' : '►';
@@ -91,14 +91,14 @@ function renderTree() {
                     <span class="chevron">${chevron}</span>
                     <span class="folder">📁 ${fileSystem.name}</span>
                  </div>`;
-        
+
         if (isExpanded && fileSystem.children) {
             fileSystem.children.forEach(child => {
                 html += renderItem(child, fileSystem.name, 1);
             });
         }
     }
-    
+
     tree.innerHTML = html;
 }
 
@@ -113,7 +113,7 @@ async function executeFile(path) {
         const filename = path.split('\\').pop();
         const response = await fetch(`/api/file/${encodeURIComponent(path)}`);
         const data = await response.json();
-        
+
         document.getElementById('textViewerTitle').textContent = data.name;
         document.getElementById('textViewerContent').textContent = data.content;
         OpenWindow('textViewer');

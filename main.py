@@ -633,7 +633,26 @@ def get_file_content(filepath):
         'content': content
     })
     
+    @app.route('/api/file/<path:filepath>')
+def get_file_content(filepath):
+    filename = filepath.replace('\\', '/').split('/')[-1]
     
+    if filename.endswith('.BMP') or filename.endswith('.PNG') or filename.endswith('.JPG'):
+        return jsonify({
+            'name': filename,
+            'type': 'image',
+            'url': url_for('static', filename=f'images/{filename}')  # Put your image in static/images/
+        })
+    
+    content_map = {
+        'README.TXT': '...',
+    }
+    
+    content = content_map.get(filename, f'Contents of {filename}')
+    return jsonify({
+        'name': filename,
+        'content': content
+    })
 #END OF FILE SYSTEM STUFF
 
 if __name__ == '__main__':
