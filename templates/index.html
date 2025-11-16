@@ -64,6 +64,32 @@
         <button onclick="closeWindow('textViewer')" class="close-btn">×</button>
     </div>
 
+
+    <div id="slotsGame" class="window">
+    <div class="window-header" onmousedown="startDrag(event, 'slotsGame')">
+        <span>SLOTS.EXE - $$$ JACKPOT $$$</span>
+        <button onclick="closeWindow('slotsGame')" class="close-btn">×</button>
+    </div>
+
+    <!-- GAMBLING AHAHAHAHHA-->
+
+    <div class="window-content">
+        <div style="text-align: center; padding: 20px; font-family: 'Courier New', monospace;">
+            <h2 style="color: #0f0;">🎰 LUCKY SLOTS 🎰</h2>
+            <div style="font-size: 48px; margin: 20px 0;">
+                <span id="slot1">🍒</span>
+                <span id="slot2">🍋</span>
+                <span id="slot3">🍊</span>
+            </div>
+            <div style="margin: 20px 0; font-size: 18px;">
+                <div id="slotsResult">Press SPIN to play!</div>
+                <div style="margin-top: 10px;">Wins: <span id="slotsWins">0</span></div>
+            </div>
+            <button onclick="spinSlots()" style="padding: 15px 40px; font-size: 18px; background: #0f0; color: #000; border: none; cursor: pointer; font-weight: bold;">SPIN</button>
+        </div>
+    </div>
+    </div>
+
     <div class="window-content">
         <pre id="textViewerContent" style="white-space: pre-wrap; font-family: 'Courier New', monospace;"></pre>
     </div>

@@ -261,3 +261,46 @@ function resetGame() {
         if (statusEl) statusEl.textContent = 'Your Turn';
     }
 }
+
+let slotsWins = 0;
+
+function spinSlots() {
+    const symbols = ['🍒', '🍋', '🍊', '🍇', '⭐', '💎', '7️⃣'];
+    const slot1 = document.getElementById('slot1');
+    const slot2 = document.getElementById('slot2');
+    const slot3 = document.getElementById('slot3');
+    const result = document.getElementById('slotsResult');
+    
+    let spins = 0;
+    const spinInterval = setInterval(() => {
+        slot1.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        slot2.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        slot3.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        spins++;
+        
+        if (spins >= 20) {
+            clearInterval(spinInterval);
+            
+            const final1 = symbols[Math.floor(Math.random() * symbols.length)];
+            const final2 = symbols[Math.floor(Math.random() * symbols.length)];
+            const final3 = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            slot1.textContent = final1;
+            slot2.textContent = final2;
+            slot3.textContent = final3;
+            
+            if (final1 === final2 && final2 === final3) {
+                slotsWins++;
+                document.getElementById('slotsWins').textContent = slotsWins;
+                result.textContent = '🎉 JACKPOT! YOU WIN! 🎉';
+                result.style.color = '#ff0';
+            } else if (final1 === final2 || final2 === final3 || final1 === final3) {
+                result.textContent = 'Close! Two match!';
+                result.style.color = '#0ff';
+            } else {
+                result.textContent = 'Try again!';
+                result.style.color = '#f00';
+            }
+        }
+    }, 100);
+}

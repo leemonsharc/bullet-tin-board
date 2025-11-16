@@ -76,38 +76,44 @@ zephyrboreas = """@gig-jig: Did you see that new bbs hosting system?<br>
 @MOD: **THIS CHAT IS READ-ONLY UNTIL FUTURE NOTICE.**"""
 
 #STUFF FOR THE FILE EXPLORER
-FILE_SYSTEM = {
-    'name': 'C:\\',
-    'type': 'folder',
-    'children': [
-        {
-            'name': 'SYSTEM',
-            'type': 'folder',
-            'children': [
-                {'name': 'CONFIG.SYS', 'type': 'file'},
-                {'name': 'NETWORK_SAVE.TXT', 'type': 'file'}
-            ]
-        },
-        {
-            'name': 'GAMES',
-            'type': 'folder',
-            'children': [
-                {'name': 'FLAPPY.EXE', 'type': 'file'},
-                {'name': 'TICTACTOE.EXE', 'type': 'file', 'executable': True}
-            ]
-        },
-        {
-            'name': 'DOCS',
-            'type': 'folder',
-            'children': [
-                {'name': 'README.TXT', 'type': 'file'},
-                {'name': 'MANUAL.DOC', 'type': 'file'}
-            ]
-        },
-        {'name': 'COMMAND.COM', 'type': 'file'},
-        {'name': 'MSDOS.SYS', 'type': 'file'}
+def get_file_system():
+    games_children = [
+        {'name': 'FLAPPY.EXE', 'type': 'file'},
+        {'name': 'TICTACTOE.EXE', 'type': 'file', 'executable': True}
     ]
-}
+    
+    if slotsUnlocked:
+        games_children.append({'name': 'SLOTS.EXE', 'type': 'file', 'executable': True})
+    
+    return {
+        'name': 'C:\\',
+        'type': 'folder',
+        'children': [
+            {
+                'name': 'SYSTEM',
+                'type': 'folder',
+                'children': [
+                    {'name': 'CONFIG.SYS', 'type': 'file'},
+                    {'name': 'NETWORK_SAVE.TXT', 'type': 'file'}
+                ]
+            },
+            {
+                'name': 'GAMES',
+                'type': 'folder',
+                'children': games_children
+            },
+            {
+                'name': 'DOCS',
+                'type': 'folder',
+                'children': [
+                    {'name': 'README.TXT', 'type': 'file'},
+                    {'name': 'MANUAL.DOC', 'type': 'file'}
+                ]
+            },
+            {'name': 'COMMAND.COM', 'type': 'file'},
+            {'name': 'MSDOS.SYS', 'type': 'file'}
+        ]
+    }
 
 
 def getLS(dir):
@@ -351,7 +357,7 @@ def cmdhistory():
 #FILE SYSTEM STUFF
 @app.route('/api/files')
 def get_files():
-    return  jsonify(FILE_SYSTEM)
+    return jsonify(get_file_system())
 
 @app.route('/api/file/<path:filepath>')
 def get_file_content(filepath):

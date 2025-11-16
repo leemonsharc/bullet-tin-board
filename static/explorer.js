@@ -107,6 +107,8 @@ async function executeFile(path) {
     if (path.includes('TICTACTOE')) {
         OpenWindow('ticTacToe');
         setTimeout(initTicTacToe, 100);
+    } else if (path.includes('SLOTS')) {
+        OpenWindow('slotsGame');
     } else if (path.includes('.TXT') || path.includes('.DOC') || path.includes('.SYS') || path.includes('.BAT')) {
         const filename = path.split('\\').pop();
         const response = await fetch(`/api/file/${encodeURIComponent(path)}`);
