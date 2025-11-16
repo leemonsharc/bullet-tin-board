@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, jsonify
 
 connected = 0
 logstatus = 0
+slotsUnlocked = False
 
 zephyrLSSC = """west-wind -- General chat<br>
 fan-fans -- Get coding support and talk about CS projects<br>
@@ -84,7 +85,7 @@ FILE_SYSTEM = {
             'type': 'folder',
             'children': [
                 {'name': 'CONFIG.SYS', 'type': 'file'},
-                {'name': 'AUTOEXEC.BAT', 'type': 'file'}
+                {'name': 'NETWORK_SAVE.TXT', 'type': 'file'}
             ]
         },
         {
@@ -107,6 +108,7 @@ FILE_SYSTEM = {
         {'name': 'MSDOS.SYS', 'type': 'file'}
     ]
 }
+
 
 def getLS(dir):
     def traverse_folder(folder, path):
@@ -353,9 +355,50 @@ def get_files():
 
 @app.route('/api/file/<path:filepath>')
 def get_file_content(filepath):
+    chat_log = (
+        '@jaybird: anyone catch that new album yet? \n'
+    '@amaryllisss: yeah picked it up yesterday, snookie u get it? \n'
+    '@snookie: oh no not yet \n'
+    '@jaybird: how come? you were talking about it all week \n'
+    '@snookie: just haven\'t made it 2 the record store \n'
+    '@amaryllisss: you\'ve been hard 2 reach lately \n'
+    '@snookie: yeah been kind of busy \n'
+    '@snookie: got a new cat actually \n'
+    '@jaybird: kool, what kind? \n'
+    '@snookie: just a tabby \n'
+    '@amaryllisss: you ok man? you seem weird \n'
+    '@snookie: no yeah i\'m fine, obviously, why would you say that \n'
+    '@jaybird: idk you just signed off real quick last time \n'
+    '@snookie: oh that? yeah had to take care of somethng \n'
+    '@amaryllisss: something or someone came home? lol \n'
+    '@snookie: what? no just had to go \n'
+    '@snookie: so anyway what\'d you think of the album \n'
+    '@jaybird: it\'s chill, 2nd side is better \n'
+    '@snookie: cool cool \n'
+    '@amaryllisss: you\'re being real short tonight snookie \n'
+    '@snookie: sorry just distracted i guess \n'
+    '@jaybird: that thing from last week still bothering u? \n'
+    '@snookie: what thing \n'
+    '@jaybird: never mind, thought u mentioned something \n'
+    'END OF SAVED LOG'
+    )
+    
+    content_map = {
+        'README.TXT': 'Welcome to Bullet-Tin Board!\n\nThis is a demo file system made for the Bullet-Tin Board project.\n Feel free to explore the files and folders.\n Made @ Parthenon 2025!!!',
+        'NETWORK_SAVE.TXT': f'Network Configuration:\n ...\nSaved data:\n COVERT.AETHER.NET\n\n{chat_log}',
+        'MANUAL.DOC': 'MANUAL\n======\n\n1. Use the file explorer\n2. Double-click files to open... (pretty self explanitory BTW some files will actually work - take a look)\n3. Enjoy!',
+        'CONFIG.SYS': 'DEVICE=HIMEM.SYS\nFILES=40\nBUFFERS=20',
+        'AUTOEXEC.BAT': '@ECHO OFF\nPROMPT $P$G\nPATH C:\\DOS;C:\\WINDOWS'
+        'MSDOS.SYS': 'This is a system file required for MS-DOS to operate properly.\nDo not modify or delete this file.',
+    }
+    
+    # Extract just the filename from the path (handles both \ and /)
+    filename = filepath.replace('\\', '/').split('/')[-1]
+    content = content_map.get(filename, f'Contents of {filename}')
+    
     return jsonify({
-        'name': filepath,
-        'content': f'Content of {filepath}\n\nHELPME'
+        'name': filename,
+        'content': content
     })
 #END OF FILE SYSTEM STUFF
 

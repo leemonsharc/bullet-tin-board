@@ -58,6 +58,16 @@
         </div>
     </div>
 
+    <div id="textViewer" class="window">
+    <div class="window-header" onmousedown="startDrag(event, 'textViewer')">
+        <span id="textViewerTitle">Text Viewer</span>
+        <button onclick="closeWindow('textViewer')" class="close-btn">×</button>
+    </div>
+
+    <div class="window-content">
+        <pre id="textViewerContent" style="white-space: pre-wrap; font-family: 'Courier New', monospace;"></pre>
+    </div>
+</div>
     <script src="{{ url_for('static', filename='windows.js') }}"></script>
     <script src="{{ url_for('static', filename='explorer.js') }}"></script>
 
