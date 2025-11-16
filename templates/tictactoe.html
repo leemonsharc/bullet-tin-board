@@ -118,155 +118,143 @@
 
     <script>
         let currentPlayer = 'X';
-        let board = ['', '', '', '', '', '', '', '', ''];
-        let gameActive = true;
-        let humanPlayer = 'X';
-        let botPlayer = 'O';
-        let lastWinner = null;
+let board = ['', '', '', '', '', '', '', '', ''];
+let gameActive = true;
+let humanPlayer = 'X';
+let botPlayer = 'O';
+let lastWinner = null;
 
-        const winPatterns = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-            [0, 4, 8], [2, 4, 6]              // diagonals
-        ];
+const winPatterns = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
+];
 
-        function initGame() {
-            const boardEl = document.getElementById('board');
-            boardEl.innerHTML = '';
-            
-            for (let i = 0; i < 9; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.index = i;
-                cell.addEventListener('click', handleCellClick);
-                boardEl.appendChild(cell);
-            }
+function initGame() {
+    const boardEl = document.getElementById('board');
+    if (!boardEl) return;
+    
+    boardEl.innerHTML = '';
+    
+    for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        cell.addEventListener('click', handleCellClick);
+        boardEl.appendChild(cell);
+    }
 
-            document.getElementById('resetBtn').addEventListener('click', resetGame);
-            document.querySelector('.close-btn').addEventListener('click', closeGame);
-        }
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetGame);
+    }
+}
 
-        function handleCellClick(e) {
-            const index = e.target.dataset.index;
-            
-            if (board[index] !== '' || !gameActive || currentPlayer !== humanPlayer) return;
-            
-            makeMove(index, humanPlayer);
-            
-            if (gameActive) {
-                setTimeout(botMove, 500);
-            }
-        }
+function handleCellClick(e) {
+    const index = e.target.dataset.index;
+    
+    if (board[index] !== '' || !gameActive || currentPlayer !== humanPlayer) return;
+    
+    makeMove(index, humanPlayer);
+    
+    if (gameActive) {
+        setTimeout(botMove, 500);
+    }
+}
 
-        function makeMove(index, player) {
-            board[index] = player;
-            const cells = document.querySelectorAll('.cell');
-            cells[index].textContent = player;
-            cells[index].classList.add('taken');
-            
+function makeMove(index, player) {
+    board[index] = player;
+    const cells = document.querySelectorAll('.cell');
+    cells[index].textContent = player;
+    cells[index].classList.add('taken');
+    
+    if (checkWin()) {
+        lastWinner = player;
+        const winner = player === humanPlayer ? 'You Win!' : 'Bot Wins!';
+        document.getElementById('status').textContent = winner;
+        gameActive = false;
+        return;
+    }
+    
+    if (board.every(cell => cell !== '')) {
+        document.getElementById('status').textContent = 'Draw!';
+        gameActive = false;
+        lastWinner = null;
+        return;
+    }
+    
+    currentPlayer = player === humanPlayer ? botPlayer : humanPlayer;
+    const turn = currentPlayer === humanPlayer ? 'Your Turn' : 'Bot Thinking...';
+    document.getElementById('status').textContent = turn;
+}
+
+function botMove() {
+    if (!gameActive) return;
+    
+    const move = getBestMove();
+    makeMove(move, botPlayer);
+}
+
+function getBestMove() {
+    for (let i = 0; i < 9; i++) {
+        if (board[i] === '') {
+            board[i] = botPlayer;
             if (checkWin()) {
-                const winner = player === humanPlayer ? 'You Win!' : 'Bot Wins!';
-                document.getElementById('status').textContent = winner;
-                gameActive = false;
-                firstPlayer = player;
-                return;
+                board[i] = '';
+                return i;
             }
-            
-            if (board.every(cell => cell !== '')) {
-                document.getElementById('status').textContent = 'Draw!';
-                gameActive = false;
-                return;
-            }
-            
-            currentPlayer = player === humanPlayer ? botPlayer : humanPlayer;
-            const turn = currentPlayer === humanPlayer ? 'Your Turn' : 'Bot Thinking...';
-            document.getElementById('status').textContent = turn;
+            board[i] = '';
         }
-
-        function botMove() {
-            if (!gameActive) return;
-            
-            const move = getBestMove();
-            makeMove(move, botPlayer);
-        }
-
-        function getBestMove() {
-            for (let i = 0; i < 9; i++) {
-                if (board[i] === '') {
-                    board[i] = botPlayer;
-                    if (checkWin()) {
-                        board[i] = '';
-                        return i;
-                    }
-                    board[i] = '';
-                }
+    }
+    
+    for (let i = 0; i < 9; i++) {
+        if (board[i] === '') {
+            board[i] = humanPlayer;
+            if (checkWin()) {
+                board[i] = '';
+                return i;
             }
-            
-            for (let i = 0; i < 9; i++) {
-                if (board[i] === '') {
-                    board[i] = humanPlayer;
-                    if (checkWin()) {
-                        board[i] = '';
-                        return i;
-                    }
-                    board[i] = '';
-                }
-            }
-            
-            if (board[4] === '') return 4;
-            
-            const corners = [0, 2, 6, 8];
-            const availableCorners = corners.filter(i => board[i] === '');
-            if (availableCorners.length > 0) {
-                return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-            }
-            
-            const available = board.map((cell, i) => cell === '' ? i : null).filter(i => i !== null);
-            return available[Math.floor(Math.random() * available.length)];
+            board[i] = '';
         }
+    }
+    
+    if (board[4] === '') return 4;
+    
+    const corners = [0, 2, 6, 8];
+    const availableCorners = corners.filter(i => board[i] === '');
+    if (availableCorners.length > 0) {
+        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+    }
+    
+    const available = board.map((cell, i) => cell === '' ? i : null).filter(i => i !== null);
+    return available[Math.floor(Math.random() * available.length)];
+}
 
-        function checkWin() {
-            return winPatterns.some(pattern => {
-                const [a, b, c] = pattern;
-                return board[a] && board[a] === board[b] && board[a] === board[c];
-            });
-        }
+function checkWin() {
+    return winPatterns.some(pattern => {
+        const [a, b, c] = pattern;
+        return board[a] && board[a] === board[b] && board[a] === board[c];
+    });
+}
 
-        function resetGame() {
-            board = ['', '', '', '', '', '', '', '', ''];
-            gameActive = true;
-            
-            if (firstPlayer === botPlayer) {
-                humanPlayer = 'O';
-                botPlayer = 'X';
-                currentPlayer = 'X'; // Bot goes first
-            } else {
-                humanPlayer = 'X';
-                botPlayer = 'O';
-                currentPlayer = 'X'; // Human goes first
-            }
-            
-            document.querySelectorAll('.cell').forEach(cell => {
-                cell.textContent = '';
-                cell.classList.remove('taken');
-            });
-            
-            if (currentPlayer === botPlayer) {
-                document.getElementById('status').textContent = 'Bot Goes First...';
-                setTimeout(botMove, 500);
-            } else {
-                document.getElementById('status').textContent = 'Your Turn';
-            }
-        }
-
-        function closeGame() {
-            document.getElementById('ticTacToe').classList.remove('active');
-        }
-
-        initGame();
-        
-        document.getElementById('ticTacToe').classList.add('active');
-
+function resetGame() {
+    board = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    
+    document.querySelectorAll('.cell').forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('taken');
+    });
+    
+    if (lastWinner === botPlayer) {
+        currentPlayer = botPlayer;
+        document.getElementById('status').textContent = 'Bot Goes First...';
+        setTimeout(botMove, 500);
+    } else {
+        currentPlayer = humanPlayer;
+        document.getElementById('status').textContent = 'Your Turn';
+    }
+}
     </script>
     </body>
 </html>
