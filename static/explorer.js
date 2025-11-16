@@ -52,32 +52,37 @@ function renderItem(item, path = '', indent = 0) {
 
     return html;
 }
+
 function executeFile(path) {
     if (path.includes('TICTACTOE.EXE')) {
         document.getElementById('ticTacToe').classList.add('active');
     }
 }
-function executeFile(path) {
-    if (path.includes('TICTACTOE.EXE')) {
-        OpenWindow('ticTacToe');
-    }
-}
+
 function renderTree() {
     const tree = document.getElementById('fileTree');
-    tree.innerHTML = renderItem(fileSystem);
-}
-
-// UHHHHH stuff so that tictactoe works and opens when you 2x click
-function selectItem(path) {
-    selected = path;
-    document.getElementById('status').textContent = `Selected: ${path}`;
-    renderTree();
-}
-
-function executeFile(path) {
-    if (path.includes('TICTACTOE.EXE')) {
-        document.getElementById('ticTacToe').classList.add('active');
+    let html = '';
+    
+    // Render the root folder item
+    if (fileSystem) {
+        const isExpanded = expanded[fileSystem.name];
+        const chevron = isExpanded ? '▼' : '►';
+        html += `<div class="item" 
+                      onclick="toggleFolder('${fileSystem.name}'); selectItem('${fileSystem.name}')"
+                      style="margin-left: 0px">
+                    <span class="chevron">${chevron}</span>
+                    <span class="folder">📁 ${fileSystem.name}</span>
+                 </div>`;
+        
+        // Render children if expanded
+        if (isExpanded && fileSystem.children) {
+            fileSystem.children.forEach(child => {
+                html += renderItem(child, fileSystem.name, 1);
+            });
+        }
     }
+    
+    tree.innerHTML = html;
 }
 
 loadFiles();
