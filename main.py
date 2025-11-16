@@ -394,9 +394,7 @@ def get_file_content(filepath):
         'NETWORK_SAVE.TXT': f'Network Configuration:\n ...\nSaved data:\n COVERT.AETHER.NET\n\n{chat_log}',
         'MANUAL.DOC': 'MANUAL\n======\n\n1. Use the file explorer\n2. Double-click files to open... (pretty self explanitory BTW some files will actually work - take a look)\n3. Enjoy!',
         'CONFIG.SYS': 'DEVICE=HIMEM.SYS\nFILES=40\nBUFFERS=20',
-        'AUTOEXEC.BAT': '@ECHO OFF\nPROMPT $P$G\nPATH C:\\DOS;C:\\WINDOWS'
-        'MSDOS.SYS': 'This is a system file required for MS-DOS to operate properly.\nDo not modify or delete this file.',
-    }
+        'AUTOEXEC.BAT': '@ECHO OFF\nPROMPT $P$G\nPATH C:\\DOS;C:\\WINDOWS'    }
     
     # Extract just the filename from the path (handles both \ and /)
     filename = filepath.replace('\\', '/').split('/')[-1]
