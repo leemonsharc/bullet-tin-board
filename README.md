@@ -1,3 +1,4 @@
 # bullet-tin-board
-A murder mystery set in a fake Bulletin Board System (BBS)
-In which you scour different BBS in order to find clues and discover who the culprit is... Solve puzzles and learn more about the people in your community - for better or for worse.
+A 1981 murder-mystery inside a BBS...
+Someone didn’t just crash the server - they killed it!
+Scour chat logs, poke around shady file directories, and solve terminal puzzles to find out which user pressed the lethal key combo. 
