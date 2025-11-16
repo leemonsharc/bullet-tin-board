@@ -7,67 +7,59 @@
 </head>
 
 <body>
-
-    <head>
-        <title>Bullet-Tin Board</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='index.css' )}}">
-    </head>
-
-    <body>
-        <div class="button-container">
-            <button class="window-button" onclick="OpenWindow('window', this)">terminal</button>
-            <button onclick="OpenWindow('fileExplorer', this)" class="window-button">file explorer</button>
-        </div>
-
-
-        <div id="window" class="window" style="left: 100px; top: 150px;">
-            <div class="window-header" onmousedown="startDrag(event,'window')">
-                <span class="window-title">terminal</span>
-                <div class="window-controls">
-                    <div class="window-control close-btn" onclick="closeWindow('window')">x</div>
-                </div>
-            </div>
-            <div class="window-content">
-                {% for i in history %}
-                <p>{{ i }}</p>
-                {% endfor %}
-                <form method="POST">
-                    <div class="input">> <input type="text" name="inp"></div><button type="submit"
-                        style="display: none;"></button>
-                </form>
-            </div>
-        </div>
-
-        <div id="fileExplorer" class="window" style="left: 100px; top: 150px;">
-            <div class="window-header" onmousedown="startDrag(event,'fileExplorer')">
-                <span class="window-title">file manager</span>
-                <div class="window-controls">
-                    <div class="window-control close-btn" onclick="closeWindow('fileExplorer')">x</div>
-                </div>
-            </div>
-            <div class="window-content">
-                {% include 'explorer.html' %}
-            </div>
-        </div>
-
-        <div id="ticTacToe" class="window">
-    <div class="window-header" onmousedown="startDrag(event, 'ticTacToe')">
-        <span>TICTACTOE.EXE - Running...</span>
-        <button onclick="closeWindow('ticTacToe')" class="close-btn">×</button>
-    </div>
-    
-    <div class="window-content">
-        <div class="game-container">
-            <div class="status" id="status">Your Turn</div>
-            <div class="board" id="board"></div>
-            <button class="reset-btn" id="resetBtn">NEW GAME</button>
-        </div>
-    </div>
+    <div class="button-container">
+        <button class="window-button" onclick="OpenWindow('window', this)">terminal</button>
+        <button onclick="OpenWindow('fileExplorer', this)" class="window-button">file explorer</button>
     </div>
 
-        <script src="{{ url_for('static', filename='windows.js') }}"></script>
 
-    </body>
+    <div id="window" class="window" style="left: 100px; top: 150px;">
+        <div class="window-header" onmousedown="startDrag(event,'window')">
+            <span class="window-title">terminal</span>
+            <div class="window-controls">
+                <div class="window-control close-btn" onclick="closeWindow('window')">x</div>
+            </div>
+        </div>
+        <div class="window-content">
+            {% for i in history %}
+            <p>{{ i|safe }}</p>
+            {% endfor %}
+            <form method="POST">
+                <div class="input">> <input type="text" name="inp"></div><button type="submit"
+                    style="display: none;"></button>
+            </form>
+        </div>
+    </div>
+
+    <div id="fileExplorer" class="window" style="left: 100px; top: 150px;">
+        <div class="window-header" onmousedown="startDrag(event,'fileExplorer')">
+            <span class="window-title">file manager</span>
+            <div class="window-controls">
+                <div class="window-control close-btn" onclick="closeWindow('fileExplorer')">x</div>
+            </div>
+        </div>
+        <div class="window-content">
+            {% include 'explorer.html' %}
+        </div>
+    </div>
+
+    <div id="ticTacToe" class="window">
+        <div class="window-header" onmousedown="startDrag(event, 'ticTacToe')">
+            <span>TICTACTOE.EXE - Running...</span>
+            <button onclick="closeWindow('ticTacToe')" class="close-btn">×</button>
+        </div>
+
+        <div class="window-content">
+            <div class="game-container">
+                <div class="status" id="status">Your Turn</div>
+                <div class="board" id="board"></div>
+                <button class="reset-btn" id="resetBtn">NEW GAME</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='windows.js') }}"></script>
+
 </body>
 
 
