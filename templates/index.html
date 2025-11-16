@@ -74,8 +74,23 @@
             <button onclick="closeWindow('textViewer')" class="close-btn">×</button>
         </div>
 
+        <div class="window-content">
+            <pre id="textViewerContent" style="white-space: pre-wrap; font-family: 'Courier New', monospace;"></pre>
+        </div>
+    </div>
 
-        <div id="slotsGame" class="window">
+    <div id="imageViewer" class="window">
+            <div class="window-header" onmousedown="startDrag(event, 'imageViewer')">
+                <span id="imageViewerTitle">Image Viewer</span>
+                <button onclick="closeWindow('imageViewer')" class="close-btn">×</button>
+            </div>
+
+            <div class="window-content" style="text-align: center; padding: 20px;">
+                <img id="imageViewerImg" style="max-width: 100%; height: auto;" />
+            </div>
+    </div>
+
+    <div id="slotsGame" class="window">
             <div class="window-header" onmousedown="startDrag(event, 'slotsGame')">
                 <span>SLOTS.EXE - $$$ JACKPOT $$$</span>
                 <button onclick="closeWindow('slotsGame')" class="close-btn">×</button>
@@ -99,23 +114,8 @@
                         style="padding: 15px 40px; font-size: 18px; background: #0f0; color: #000; border: none; cursor: pointer; font-weight: bold;">SPIN</button>
                 </div>
             </div>
-        </div>
-
-        <div id="imageViewer" class="window">
-            <div class="window-header" onmousedown="startDrag(event, 'imageViewer')">
-                <span id="imageViewerTitle">Image Viewer</span>
-                <button onclick="closeWindow('imageViewer')" class="close-btn">×</button>
-            </div>
-
-            <div class="window-content" style="text-align: center; padding: 20px;">
-                <img id="imageViewerImg" style="max-width: 100%; height: auto;" />
-            </div>
-        </div>
-
-        <div class="window-content">
-            <pre id="textViewerContent" style="white-space: pre-wrap; font-family: 'Courier New', monospace;"></pre>
-        </div>
     </div>
+    
     <script src="{{ url_for('static', filename='windows.js') }}"></script>
     <script src="{{ url_for('static', filename='explorer.js') }}"></script>
 
