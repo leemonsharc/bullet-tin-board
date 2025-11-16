@@ -109,11 +109,19 @@ async function executeFile(path) {
         setTimeout(initTicTacToe, 100);
     } else if (path.includes('SLOTS')) {
         OpenWindow('slotsGame');
+    } else if (path.toUpperCase().includes('.PNG') || path.toUpperCase().includes('.BMP') || path.toUpperCase().includes('.JPG')) {
+        const filename = path.split('\\').pop();
+        const response = await fetch(`/api/file/${encodeURIComponent(path)}`);
+        const data = await response.json();
+        
+        document.getElementById('imageViewerTitle').textContent = data.name;
+        document.getElementById('imageViewerImg').src = data.url;
+        OpenWindow('imageViewer');
     } else if (path.includes('.TXT') || path.includes('.DOC') || path.includes('.SYS') || path.includes('.BAT')) {
         const filename = path.split('\\').pop();
         const response = await fetch(`/api/file/${encodeURIComponent(path)}`);
         const data = await response.json();
-
+        
         document.getElementById('textViewerTitle').textContent = data.name;
         document.getElementById('textViewerContent').textContent = data.content;
         OpenWindow('textViewer');
