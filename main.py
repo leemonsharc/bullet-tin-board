@@ -638,12 +638,14 @@ def get_ffile_content(filepath):
 def get_file_content(filepath):
     filename = filepath.replace('\\', '/').split('/')[-1]
     
-    if filename.endswith('.BMP') or filename.endswith('.PNG') or filename.endswith('.JPG'):
+    if filename.upper().endswith('.PNG') or filename.upper().endswith('.BMP') or filename.upper().endswith('.JPG'):
         return jsonify({
             'name': filename,
             'type': 'image',
-            'url': url_for('static', filename=f'images/{filename}')  # Put your image in static/images/
+            'url': url_for('static', filename='cattu.PNG')  # Direct reference
         })
+
+    
     
     content_map = {
         'README.TXT': '...',
