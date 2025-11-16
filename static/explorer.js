@@ -89,4 +89,10 @@ function renderTree() {
     tree.innerHTML = html;
 }
 
+function toggleFolder(path) {
+    expanded[path] = !expanded[path];
+    console.log('Toggled:', path, 'Expanded:', expanded[path]);
+    console.log('All expanded:', expanded);
+    renderTree();
+}
 loadFiles();
