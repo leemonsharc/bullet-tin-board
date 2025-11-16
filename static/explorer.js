@@ -1,26 +1,4 @@
-let fileSystem = null;
-let expanded = {};
-let selected = null;
-
-async function loadFiles() {
-    const response = await fetch('/api/files');
-    fileSystem = await response.json();
-    renderTree();
-}
-
-function toggleFolder(path) {
-    expanded[path] = !expanded[path];
-    renderTree();
-}
-
-function selectItem(path) {
-    selected = path;
-    document.getElementById('status').textContent = `Selected: ${path}`;
-    renderTree();
-}
-
 function renderItem(item, path = '', indent = 0) {
-    // Build the current path correctly, handling the root's backslash
     let currentPath;
     if (path === 'C:\\') {
         currentPath = `C:\\${item.name}`;
@@ -42,6 +20,12 @@ function renderItem(item, path = '', indent = 0) {
                     <span class="folder">📁 ${item.name}</span>
                  </div>`;
 
+        if (isExpanded && item.children) {
+            item.children.forEach(child => {
+                html += renderItem(child, currentPath, indent + 1);
+            });
+        }
+
     } else {
         html += `<div class="item ${isSelected ? 'selected' : ''}"
                   onclick="selectItem('${currentPath}')"
@@ -51,45 +35,5 @@ function renderItem(item, path = '', indent = 0) {
              </div>`;
     }
 
-    if (isExpanded && item.children) {
-        item.children.forEach(child => {
-            html += renderItem(child, currentPath, indent + 1);
-        });
-    }
-
     return html;
 }
-
-function executeFile(path) {
-    if (path.includes('TICTACTOE.EXE')) {
-        document.getElementById('ticTacToe').classList.add('active');
-    }
-}
-
-function renderTree() {
-    const tree = document.getElementById('fileTree');
-    let html = '';
-    
-    // Render the root folder item
-    if (fileSystem) {
-        const isExpanded = expanded[fileSystem.name];
-        const chevron = isExpanded ? '▼' : '►';
-        html += `<div class="item" 
-                      onclick="toggleFolder('${fileSystem.name}'); selectItem('${fileSystem.name}')"
-                      style="margin-left: 0px">
-                    <span class="chevron">${chevron}</span>
-                    <span class="folder">📁 ${fileSystem.name}</span>
-                 </div>`;
-        
-        // Render children if expanded
-        if (isExpanded && fileSystem.children) {
-            fileSystem.children.forEach(child => {
-                html += renderItem(child, fileSystem.name, 1);
-            });
-        }
-    }
-    
-    tree.innerHTML = html;
-}
-
-loadFiles();
