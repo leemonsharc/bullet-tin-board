@@ -132,13 +132,13 @@ def processCommand(command):
         output = ""
     elif command == "/?" or command == "help":
         output = """
-help (or) /? -- display this help message
-echo [text] -- writes [text] to the terminal\n
-ls -- reads out all of the files in the current directory\n
-ls [folder] -- reads out all of the files in [folder]\n
-telnet [address] -- connects to the [address]\n
-clear -- clears the terminal history\n
-cls -- clears the terminal history\n
+help (or) /? -- display this help message<br>
+echo [text] -- writes [text] to the terminal<br>
+ls -- reads out all of the files in the current directory<br>
+ls [folder] -- reads out all of the files in [folder]<br>
+telnet [address] -- connects to the [address]<br>
+clear -- clears the terminal history<br>
+cls -- clears the terminal history
         """
     elif cmdSplits[0] == "echo":
         if len(cmdSplits) == 2:
@@ -163,11 +163,10 @@ cls -- clears the terminal history\n
             output = "Connecting to zephyr.beepboop.net...<br>Please enter in your username."
         elif cmdSplits[1] == "covert.aether.net":
             connected = 2
-            output = "Connecting to covert.aether.net..."
+            logstatus = 1
+            output = "Connecting to covert.aether.net...<br>Please enter in your username."
         else:
             output = "The server you are looking for does not exist. Please make sure the address you are typing in is correct."
-    elif command == "clear" or command == "cls":
-        history = []
     else:
         output = helpSuggestion
     return output
@@ -194,11 +193,10 @@ def bbsProcessor(command):
     #print("BBS PROCESSOR")
     #print(str(connected) + ", " + str(logstatus))
 
-    #REMOVE[
-    if command == "logstatus":
-        output = str(logstatus)
-    #       ]
-    elif logstatus == 0:
+    print(logstatus)
+    print
+
+    if logstatus == 0:
         output = "Please enter in your username"
         logstatus = 1
         return
@@ -210,13 +208,28 @@ def bbsProcessor(command):
                 output = "Error: No spaces allowed in names. Disconnected."
             elif command == "blue-fire":
                 logstatus = 2
-                output = "Username found.\nPlease enter in your password"
+                output = "Username found.<br>Please enter in your password"
             else:
                 connected = 0
                 logstatus = 0
                 output = "Username not found. Disconnected."
         elif connected == 2: #covert
-            return
+            print("connected 2")
+            if len(cmdSplits) > 1:
+                print("too long")
+                connected = 0
+                logstatus = 0
+                output = "Error: No spaces allowed in names. Disconnected."
+            elif command == "paper":
+                print("paper")
+                logstatus = 2
+                output = "Username found.<br>Please enter in your password"
+            else:
+                print("error")
+                connected = 0
+                logstatus = 0
+                output = "Username not found. Disconnected."
+            return output
     elif logstatus == 2:
         if connected == 1: #zephyr
             if len(cmdSplits) > 1:
@@ -231,6 +244,17 @@ def bbsProcessor(command):
                 logstatus = 0
                 output = "Error: Incorrect password. Disconnected."
         elif connected == 2: #covert
+            if len(cmdSplits) > 1:
+                connected = 0
+                logstatus = 0
+                output = "Error: No spaces allowed in names. Disconnected."
+            elif command == "fan-fans":
+                logstatus = 3
+                output = """Password correct! Welcome, paper, to Covert Aether"""
+            else:
+                connected = 0
+                logstatus = 0
+                output = "Error: Incorrect password. Disconnected."
             return
         
 
@@ -310,6 +334,8 @@ def cmdhistory():
     if connected == 0:
         processedCommand = processCommand(command)
     elif connected == 1:
+        processedCommand = bbsProcessor(command)
+    elif connected == 2:
         processedCommand = bbsProcessor(command)
     history.append("> " + command)
     history.append(processedCommand)
