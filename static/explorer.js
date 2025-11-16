@@ -61,7 +61,7 @@ function renderItem(item, path = '', indent = 0) {
 }
 
 function executeFile(path) {
-    if (path.includes('TICTACTOE.EXE')) {
+    if (path.includes('TICTACTOE')) {
         document.getElementById('ticTacToe').classList.add('active');
     }
 }
