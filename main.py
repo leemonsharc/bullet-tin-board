@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, jsonify
-from flask import flask_socketio
+from flask_socketio import SocketIO
 connected = 0
 logstatus = 0
 slotsUnlocked = False
@@ -240,7 +240,7 @@ def get_file_system():
                 'children': [
                     {'name': 'README.TXT', 'type': 'file'},
                     {'name': 'MANUAL.DOC', 'type': 'file'},
-                    {'name': 'CATTU.PNG', 'type': 'file'}
+                    {'name': 'cattu.PNG', 'type': 'file'}
                 ]
             },
             {'name': 'COMMAND.COM', 'type': 'file'},
@@ -527,7 +527,7 @@ disconnect -- disconnect from Cascade
                     output = f"""~#bigapl~<br>
                     {aetherbigapl}"""
         
-            elif connected == 3
+            elif connected == 3:
                 output = f"""LIST OF SUBCHATS:<br>
 {cascadeLSSC}
                 """
@@ -589,7 +589,7 @@ def get_files():
     return jsonify(get_file_system())
 
 @app.route('/api/file/<path:filepath>')
-def get_file_content(filepath):
+def get_ffile_content(filepath):
     chat_log = (
         '@jaybird: anyone catch that new album yet? \n'
     '@amaryllisss: yeah picked it up yesterday, snookie u get it? \n'
@@ -633,7 +633,7 @@ def get_file_content(filepath):
         'content': content
     })
     
-    @app.route('/api/file/<path:filepath>')
+@app.route('/api/file/<path:filepath>')
 def get_file_content(filepath):
     filename = filepath.replace('\\', '/').split('/')[-1]
     
