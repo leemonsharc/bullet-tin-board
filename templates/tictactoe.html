@@ -255,6 +255,12 @@ function resetGame() {
         document.getElementById('status').textContent = 'Your Turn';
     }
 }
+
+    if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGame);
+} else {
+    initGame();
+}
     </script>
     </body>
 </html>
