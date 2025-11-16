@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template, jsonify
-from flask_socketio import SocketIO
 connected = 0
 logstatus = 0
 slotsUnlocked = False
@@ -161,8 +160,9 @@ aetherbigapl = """@tech-wizard: JUST FINISHED MY 4TH CELSIUS<br>
 @code-goblin: dude you're gonna have a heart attack<br>
 @tech-wizard: WORTH IT FOR PARTHENON"""
 
-cascadeLSSC = """babble<br>
-the-mountains<br>"""
+cascadeLSSC = """babble -- no description<br>
+the-mountains -- no description<br>
+ocean-view -- no description"""
 
 cascadebabble = """@MOD: Messages deleted.<br>
 @byte-knight: WHAT
@@ -261,9 +261,10 @@ def getLS(dir):
                         return result
         return None
 
+    file_system = get_file_system()
     if dir == 'C:\\':
-        return FILE_SYSTEM['children']
-    return traverse_folder(FILE_SYSTEM, dir)
+        return file_system['children']
+    return traverse_folder(file_system, dir)
 
 #END OF FILE SYSTEM STUFF
 def processCommand(command):
@@ -311,7 +312,7 @@ cls -- clears the terminal history
             connected = 2
             logstatus = 1
             output = "Connecting to covert.aether.net...<br>Please enter in your username."
-        elif cmdSplits[2] == "cascade.aether.net":
+        elif cmdSplits[1] == "cascade.underground.net":
             connected = 3
             logstatus = 1
             output = "Connecting to cascade.underground.net...<br>Please enter in your username."
@@ -395,6 +396,7 @@ def bbsProcessor(command):
                 connected = 0
                 logstatus = 0
                 output = "Username not found. Disconnected."
+            return output
     elif logstatus == 2:
         if connected == 1: #zephyr
             if len(cmdSplits) > 1:
@@ -486,7 +488,7 @@ disconnect -- disconnect from Cascade
             elif cmdSplits[0] == "cn-sc":
                 if len(cmdSplits) < 1:
                     output = "Error: Too few arguments. Please type cn-sc [subchat] to connect to a subchat."
-                if len(cmdSplits) > 2:
+                elif len(cmdSplits) > 2:
                     output = "Error: Too many arguments. Please type cn-sc [subchat] to connect to a subchat."
                 elif cmdSplits[1] == "west-wind": #general
                     output = f"""[[#west-wind]]<br>
@@ -515,7 +517,7 @@ disconnect -- disconnect from Cascade
             elif cmdSplits[0] == "cn-sc":
                 if len(cmdSplits) < 1:
                     output = "Error: Too few arguments. Please type cn-sc [subchat] to connect to a subchat."
-                if len(cmdSplits) > 2:
+                elif len(cmdSplits) > 2:
                     output = "Error: Too many arguments. Please type cn-sc [subchat] to connect to a subchat."
                 elif cmdSplits[1] == "eurus":
                     output = f"""~#eurus~<br>
@@ -527,14 +529,16 @@ disconnect -- disconnect from Cascade
                     output = f"""~#bigapl~<br>
                     {aetherbigapl}"""
         
-            elif connected == 3:
+        elif connected == 3:
+            if command == "ls-sc":
                 output = f"""LIST OF SUBCHATS:<br>
-{cascadeLSSC}
-                """
+                {cascadeLSSC}"""
             elif cmdSplits[0] == "cn-sc":
                 if len(cmdSplits) < 1:
                     output = "Error: Too few arguments. Please type cn-sc [subchat] to connect to a subchat."
-                if len(cmdSplits) > 2:
+                if command == "cn-sc":
+                    output = "Error: Too few arguments. Please type cn-sc [subchat] to connect to a subchat."
+                elif len(cmdSplits) > 2:
                     output = "Error: Too many arguments. Please type cn-sc [subchat] to connect to a subchat."
                 elif cmdSplits[1] == "babble":
                     output = f"""*#babble*<br>
@@ -545,6 +549,8 @@ disconnect -- disconnect from Cascade
                 elif cmdSplits[1] == "ocean-view":
                     output = f"""*#ocean-view*<br>
                     {cascadeoceanview}"""
+            else:
+                output = helpSuggestion
 
             
     else:
@@ -554,13 +560,7 @@ disconnect -- disconnect from Cascade
     return output
 
 app = Flask(__name__)
-socketio = SocketIO(app, logge=True)
-clients = 0
-history = {}
-@socketio.on("connect", namespace="/")
-def connect():
-    clients += 1
-    history[clients] = []
+history = []
     
 @app.route('/')
 def index():
@@ -569,7 +569,6 @@ def index():
     return render_template('index.html', history = history)
 @app.route('/', methods=['POST'])
 def cmdhistory():
-    global history
     global connected
     command = "".join(request.form['inp'])
     # 0 = disconnected, 1 = zephyr, 2 = covert
@@ -579,7 +578,9 @@ def cmdhistory():
         processedCommand = bbsProcessor(command)
     elif connected == 2:
         processedCommand = bbsProcessor(command)
-    history.append("> " + command)
+    elif connected == 3:
+        processedCommand = bbsProcessor(command)
+        history.append("> " + command)
     history.append(processedCommand)
     return render_template('index.html', history = history)
 
