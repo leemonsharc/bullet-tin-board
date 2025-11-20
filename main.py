@@ -262,11 +262,7 @@ def processCommand(command):
         output = """
 help (or) /? -- display this help message<br>
 echo [text] -- writes [text] to the terminal<br>
-ls -- reads out all of the files in the current directory<br>
-ls [folder] -- reads out all of the files in [folder]<br>
 telnet [address] -- connects to the [address]<br>
-clear -- clears the terminal history<br>
-cls -- clears the terminal history
         """
     elif cmdSplits[0] == "echo":
         if len(cmdSplits) == 2:
