@@ -248,28 +248,9 @@ def get_file_system():
         ]
     }
 
-
-def getLS(dir):
-    def traverse_folder(folder, path):
-        if folder['name'] == path:
-            return folder.get('children', [])
-        if 'children' in folder:
-            for child in folder['children']:
-                if child['type'] == 'folder':
-                    result = traverse_folder(child, path)
-                    if result is not None:
-                        return result
-        return None
-
-    file_system = get_file_system()
-    if dir == 'C:\\':
-        return file_system['children']
-    return traverse_folder(file_system, dir)
-
 #END OF FILE SYSTEM STUFF
 def processCommand(command):
     output = ""
-    global workingDir
     global history
     global connected
     global logstatus
@@ -290,13 +271,6 @@ cls -- clears the terminal history
     elif cmdSplits[0] == "echo":
         if len(cmdSplits) == 2:
             output = cmdSplits[1]
-    elif cmdSplits[0] == "ls":
-        if len(cmdSplits) > 2:
-            output = helpSuggestion
-        elif len(cmdSplits) == 1:
-            output = getLS(workingDir)
-        elif len(cmdSplits) == 2:
-            output = getLS(cmdSplits[1])
     elif cmdSplits[0] == "telnet":
         if len(cmdSplits) > 2:
             output = "You have too many arguments. Please use telnet [address] to connect to a bulletin board."
@@ -564,25 +538,26 @@ history = []
     
 @app.route('/')
 def index():
-    global history
-    print(history)
-    return render_template('index.html', history = history)
-@app.route('/', methods=['POST'])
-def cmdhistory():
+    return render_template('index.html')
+
+@app.route('/api/command', methods=['POST'])
+def api_command():
     global connected
-    command = "".join(request.form['inp'])
-    # 0 = disconnected, 1 = zephyr, 2 = covert
+    # Accept form-encoded or JSON payloads
+    data = request.get_json(silent=True)
+    if data and 'command' in data:
+        command = data['command']
+    else:
+        # fallback to form data
+        command = request.form.get('inp', '')
+    command = "".join(command)
     if connected == 0:
         processedCommand = processCommand(command)
-    elif connected == 1:
+    elif connected in (1,2,3):
         processedCommand = bbsProcessor(command)
-    elif connected == 2:
-        processedCommand = bbsProcessor(command)
-    elif connected == 3:
-        processedCommand = bbsProcessor(command)
-        history.append("> " + command)
-    history.append(processedCommand)
-    return render_template('index.html', history = history)
+    else:
+        processedCommand = processCommand(command)
+    return jsonify({'response': processedCommand})
 
 #FILE SYSTEM STUFF
 @app.route('/api/files')
